@@ -44,6 +44,12 @@ npm run build       # static site in web/app/dist (copy it to any static host)
 
 The output in `dist/` uses relative paths, so it can be served from any folder, for example GitHub Pages.
 
+### Publish on GitHub Pages
+
+`.github/workflows/pages.yml` builds, tests and publishes the app whenever `web/`, `database/` or `examples/` changes on `master`. You can also start it by hand from the Actions tab.
+
+One-time setup: go to **Settings > Pages > Build and deployment**, and set **Source** to **GitHub Actions**. The site is then served at `https://<owner>.github.io/<repo>/`.
+
 ### Google Drive (optional)
 
 Create an OAuth client ID (type: Web application) in Google Cloud Console and add your site's origin. Then build with:
@@ -52,7 +58,7 @@ Create an OAuth client ID (type: Web application) in Google Cloud Console and ad
 VITE_GOOGLE_CLIENT_ID=xxxx.apps.googleusercontent.com npm run build
 ```
 
-The app uses only the `drive.file` scope, which limits it to files the app itself created or that the user opened with it. Without a client ID, the Drive button is hidden and everything else works.
+The app uses only the `drive.file` scope, which limits it to files the app itself created or that the user opened with it. For GitHub Pages, add `https://<owner>.github.io` as an authorized JavaScript origin, and store the client ID as the repository variable `VITE_GOOGLE_CLIENT_ID` (Settings > Secrets and variables > Actions > Variables). Without a client ID, the Drive button is hidden and everything else works.
 
 ## How USER_GRAPH works here
 
