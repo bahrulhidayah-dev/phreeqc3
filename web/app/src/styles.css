@@ -354,3 +354,7 @@ button.chip{cursor:pointer}
 .btn:disabled{opacity:.5;cursor:not-allowed}
 textarea.code{display:block;color:var(--ink)}
 .drop{cursor:pointer}
+/* Native dropdown lists: some browsers (Chrome/Edge on Windows) draw the popup with the select's own
+   background, which is transparent in the header and project bar; give options explicit theme colours. */
+select option, select optgroup{background-color:var(--surface);color:var(--ink)}
+select optgroup{color:var(--muted)}
