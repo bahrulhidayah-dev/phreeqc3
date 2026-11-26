@@ -19,6 +19,7 @@
     "@codemirror/search": "^6.7.3",
     "@codemirror/state": "^6.7.6",
     "@codemirror/view": "^6.44.1",
+    "@lezer/highlight": "^1.2.5",
     "exceljs": "^4.4.0",
     "jspdf": "^4.2.1",
     "react": "^19.2.0",
@@ -26,6 +27,7 @@
     "svg2pdf.js": "^2.9.0"
   },
   "devDependencies": {
+    "@types/node": "^26.6.11",
     "@types/react": "^19.3.3",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.3.0",

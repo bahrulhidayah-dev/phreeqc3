@@ -332,3 +332,25 @@ svg text{font-family:var(--f-sans)}
 }
 @media (prefers-reduced-motion:no-preference){.view{animation:fade .18s ease-out}}
 @keyframes fade{from{opacity:.4;transform:translateY(3px)}to{opacity:1;transform:none}}
+
+/* ---------- App additions ---------- */
+.projname{border:1px solid transparent;background:transparent;font-weight:600;font-size:14px;padding:2px 4px;margin-left:-5px;border-radius:5px;min-width:0;width:min(360px,100%)}
+.projname:hover,.projname:focus{border-color:var(--line);background:var(--surface)}
+.cm-host{height:100%;min-height:520px;border-top:0}
+.cm-host .cm-editor{height:100%;min-height:520px}
+table{border-collapse:collapse;width:100%}
+.comp th,.data th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);background:var(--sunk);white-space:nowrap}
+.comp th.r{text-align:right}
+.comp td{border-bottom:1px solid var(--line)}
+.data td{padding:5px 10px;border-bottom:1px solid var(--line);font-size:12.5px;white-space:nowrap}
+.data td.num{text-align:right}
+.data thead th{position:sticky;top:0;z-index:1}
+.field select,.field input{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:6px 8px}
+select{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:4px 6px}
+.chip{cursor:default}
+button.chip{cursor:pointer}
+.runbar{position:fixed;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,transparent,var(--hdr-hi),transparent);background-size:50% 100%;animation:runbar 1.1s linear infinite;z-index:95}
+@keyframes runbar{from{background-position:-50% 0}to{background-position:150% 0}}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+textarea.code{display:block;color:var(--ink)}
+.drop{cursor:pointer}

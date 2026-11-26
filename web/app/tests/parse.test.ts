@@ -34,3 +34,13 @@ test('warnings are collected', () => {
   const p = parseOutput(ex('ex12b.out'));
   assert.ok(p.warnings.some(w => /dispersivities/.test(w)));
 });
+
+import { parseDatabase } from '../src/lib/dbParse.ts';
+test('database entries from phreeqc.dat', () => {
+  const db = parseDatabase(fs.readFileSync(new URL('../../../database/phreeqc.dat', import.meta.url), 'utf8'));
+  const calcite = db.find(e => e.kind === 'PHASES' && e.name === 'Calcite')!;
+  assert.equal(calcite.logk, '-8.45');
+  assert.match(calcite.formula!, /CaCO3/);
+  assert.ok(db.some(e => e.kind === 'SOLUTION_SPECIES' && e.name === 'CaCO3'));
+  assert.ok(db.filter(e => e.kind === 'PHASES').length > 50);
+});

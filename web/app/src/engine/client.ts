@@ -23,7 +23,7 @@ export function runPhreeqc(req: Omit<RunRequest, 'id' | 'base'>): Promise<RunRes
   const id = ++seq;
   return new Promise((resolve, reject) => {
     pending = { id, resolve, reject };
-    worker!.postMessage({ ...req, id, base: import.meta.env.BASE_URL } satisfies RunRequest);
+    worker!.postMessage({ ...req, id, base: new URL(import.meta.env.BASE_URL, location.href).href } satisfies RunRequest);
   });
 }
 
