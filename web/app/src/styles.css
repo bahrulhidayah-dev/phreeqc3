@@ -50,7 +50,7 @@ a{color:var(--accent)}
 
 /* ---------- Header ---------- */
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--hdr1)}
-.hdr{position:relative;color:var(--hdr-ink);background:linear-gradient(120deg,var(--hdr1) 0%,var(--hdr2) 70%,#0E7484 100%);overflow:hidden;margin-top:calc(-1 * env(safe-area-inset-top,0px));padding-top:env(safe-area-inset-top,0px)}
+.hdr{position:relative;color:var(--hdr-ink);background:linear-gradient(120deg,var(--hdr1) 0%,var(--hdr2) 70%,#0E7484 100%);z-index:30;margin-top:calc(-1 * env(safe-area-inset-top,0px));padding-top:env(safe-area-inset-top,0px)}
 .hdr-waves{position:absolute;inset:0;pointer-events:none;opacity:.55}
 .hdr-in{position:relative;display:flex;flex-direction:column;gap:12px;padding-block:14px 0}
 .hdr-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
