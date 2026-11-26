@@ -1,0 +1,35 @@
+{
+  "name": "aquos-geochemistry",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Aquos Geochemistry: web interface for the USGS PHREEQC 3 engine compiled to WebAssembly",
+  "scripts": {
+    "sync": "node scripts/sync-assets.mjs",
+    "engine": "bash ../engine/build.sh",
+    "dev": "npm run sync && vite",
+    "build": "npm run sync && tsc -b && vite build",
+    "preview": "vite preview",
+    "test": "node --experimental-strip-types --no-warnings --test tests/*.test.ts"
+  },
+  "dependencies": {
+    "@codemirror/autocomplete": "^6.20.4",
+    "@codemirror/commands": "^6.11.2",
+    "@codemirror/language": "^6.13.1",
+    "@codemirror/search": "^6.7.3",
+    "@codemirror/state": "^6.7.6",
+    "@codemirror/view": "^6.44.1",
+    "exceljs": "^4.4.0",
+    "jspdf": "^4.2.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "svg2pdf.js": "^2.9.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.3",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.3.0",
+    "typescript": "5.9",
+    "vite": "^8.4.0"
+  }
+}

@@ -1,0 +1,7 @@
+node_modules/
+dist/
+engine/obj/
+app/public/databases/
+app/public/examples/
+app/public/manifest.json
+app/public/NOTICE.TXT
