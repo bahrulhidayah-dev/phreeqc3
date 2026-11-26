@@ -13,6 +13,7 @@ import type { ThemeColors } from './components/Chart';
 import type { ChartStyle } from './components/chartStyle';
 import { fetchText, runPhreeqc, cancelRun } from './engine/client';
 import { parseOutput, parseSel } from './lib/parseOutput';
+import { fixPunchHeadings } from './lib/punchFix';
 import { transformUserGraphs, readUserGraph } from './lib/userGraph';
 import { ALL_KEYWORDS } from './lib/keywords';
 import { splitBlocks, joinBlocks, summarize } from './lib/inputModel';
@@ -49,6 +50,7 @@ export default function App() {
   const [project, setProject] = useState<ProjectX>(() => loadAutosave() ?? newProject());
   const [outcome, setOutcome] = useState<RunOutcome | null>(null);
   const [running, setRunning] = useState(false);
+  const [runError, setRunError] = useState<string | null>(null);
   const [toastMsg, setToastMsg] = useState('');
   const [dialog, setDialog] = useState<'' | 'import' | 'import-p' | 'palette' | 'drive'>('');
   const [gloss, setGloss] = useState(false);
@@ -103,7 +105,7 @@ export default function App() {
   // ---- run ----
   const run = useCallback(async () => {
     const p = project;
-    setRunning(true);
+    setRunning(true); setRunError(null);
     try {
       const db = await loadDb(p.database, p);
       const files: Record<string, string> = { ...p.files };
@@ -132,7 +134,7 @@ export default function App() {
       if (view !== 'results' && view !== 'editor') go('results');
       if (view === 'editor' && res.ok && !parsed.errors.length) go('results');
     } catch (e) {
-      if ((e as Error).message !== 'cancelled') toast(String((e as Error).message || e));
+      if ((e as Error).message !== 'cancelled') { const msg = String((e as Error).message || e); setRunError(msg); toast(msg); }
     } finally { setRunning(false); }
   }, [project, manifest, loadDb, view, toast]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -318,7 +320,9 @@ export default function App() {
       {view === 'editor' && <InputEditor t={t} lang={lang} input={project.input} setInput={setInput} names={names} onRun={run} messages={messages} insert={insert} onInsert={addKeyword} jumpTo={null} />}
       {view === 'results' && <Results t={t} colors={colors} outcome={outcome} running={running} projectName={projName} charts={project.charts}
         saveChart={(id, s: ChartStyle) => setProject(p => ({ ...p, charts: { ...p.charts, [id]: s } }))}
-        tableCharts={project.tableCharts ?? []} setTableCharts={c => update({ tableCharts: c })} toast={toast} />}
+        tableCharts={project.tableCharts ?? []} setTableCharts={c => update({ tableCharts: c })} toast={toast}
+        runError={runError} onRun={run} input={project.input}
+        onFixHeadings={() => { const r = fixPunchHeadings(project.input); if (r.fixed) { update({ input: r.text }); toast(t('ph_done', { n: r.fixed })); } }} />}
       {view === 'database' && <DatabaseView t={t} databases={manifest.databases} current={project.database} onUse={d => { update({ database: d }); toast(t('t_db', { db: d })); }} onInsert={insertPhase} />}
 
       <footer className="foot">

@@ -121,6 +121,12 @@ export const T = {
   error: ['Error', 'エラー', 'Error'],
   warning: ['Warning', '警告', 'Peringatan'],
 
+  r_run_now: ['Run this model', 'このモデルを実行', 'Jalankan model ini'],
+  r_crash: ['The last run did not finish:', '直前の実行は完了しませんでした:', 'Proses terakhir tidak selesai:'],
+  ph_fix: ['Fix headings', '見出しを修正', 'Perbaiki headings'],
+  ph_fix_s: ['{label}: {h} headings, {v} values written by PUNCH.', '{label}: 見出し {h} 個、PUNCH の値 {v} 個。', '{label}: {h} heading, {v} nilai ditulis oleh PUNCH.'],
+  ph_dyn: ['{label}: the number of PUNCH values depends on loops or conditions, so it cannot be checked automatically. Make -headings list one name per value.', '{label}: PUNCH の値の数がループや条件で変わるため、自動では確認できません。-headings に値ごとに 1 つ名前を書いてください。', '{label}: jumlah nilai PUNCH bergantung pada loop atau kondisi, jadi tidak bisa dicek otomatis. Tulis satu nama di -headings untuk setiap nilai.'],
+  ph_done: ['Headings fixed in {n} USER_PUNCH block(s). Run again to update the results.', '{n} 個の USER_PUNCH の見出しを修正しました。結果を更新するには再実行してください。', 'Headings diperbaiki di {n} blok USER_PUNCH. Jalankan lagi untuk memperbarui hasil.'],
   r_none: ['No results yet. Open an example or write an input, then press Run.', 'まだ結果がありません。例を開くか input を書いて Run を押してください。', 'Belum ada hasil. Buka contoh atau tulis input, lalu tekan Jalankan.'],
   r_sub: ['Run with {db} · {sims} simulations · {ms} ms', '{db} で実行 · {sims} simulations · {ms} ms', 'Dijalankan dengan {db} · {sims} simulasi · {ms} ms'],
   r_failed: ['The engine stopped with errors. See the messages below and the output file.', 'エンジンがエラーで停止しました。下のメッセージと出力ファイルを確認してください。', 'Mesin berhenti karena error. Lihat pesan di bawah dan file output.'],

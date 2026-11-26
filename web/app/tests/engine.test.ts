@@ -46,6 +46,7 @@ test('USER_GRAPH of ex2 is rebuilt from the engine output', async () => {
   assert.equal(t.graphs[0].title, 'Gypsum-Anhydrite Stability');
   const r = await run(t.input);
   assert.equal(r.rc, 0);
+  assert.ok(!parseOutput(r.out).warnings.some(w => /Headings count/.test(w)), 'hidden graph USER_PUNCH must not warn about headings');
   const g = readUserGraph(t.graphs[0], filesOf(r, t.graphs));
   assert.deepEqual(g.series.map(s => s.name), ['Gypsum', 'Anhydrite']);
   assert.equal(g.series[0].points.length, 51);
@@ -68,6 +69,10 @@ for (const e of ['ex2b', 'ex3', 'ex4', 'ex5', 'ex6', 'ex7', 'ex8', 'ex9', 'ex10'
     const r = await run(t.input, e.startsWith('ex20') ? 'iso.dat' : 'phreeqc.dat');
     assert.equal(r.rc, 0, `${e} rc`);
     assert.equal(parseOutput(r.out).errors.length, 0);
+    if (parseOutput(r.out).warnings.some(w => /Headings count/.test(w))) {
+      const raw = await run(ex(e), e.startsWith('ex20') ? 'iso.dat' : 'phreeqc.dat');
+      assert.ok(parseOutput(raw.out).warnings.some(w => /Headings count/.test(w)), `${e}: headings warning comes from the graph translation`);
+    }
     const files = filesOf(r, t.graphs);
     for (const g of t.graphs) assert.ok(readUserGraph(g, files).series.length > 0, `${e} graph ${g.n}`);
   });

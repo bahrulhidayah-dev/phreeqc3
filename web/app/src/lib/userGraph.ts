@@ -64,6 +64,10 @@ function rewriteBasic(line: string): string {
     });
 }
 
+// The hidden USER_PUNCH gets a generous heading list, so the engine does not warn that the number
+// of PUNCH values (which varies with the graph) does not match the headings. Values are read by marker, not by heading.
+const GRAPH_HEADINGS = '    -headings ' + Array.from({ length: 400 }, (_, i) => `g${i + 1}`).join(' ');
+
 export function transformUserGraphs(input: string): { input: string; graphs: UserGraphDef[] } {
   const physical = input.replace(/\\[ \t]*\r?\n/g, ' ').split(/\r?\n/);
   const out: string[] = [];
@@ -89,7 +93,7 @@ export function transformUserGraphs(input: string): { input: string; graphs: Use
       g.parts.push({ file, headings: headings ?? last?.headings ?? [] });
       activeSO.set(n, so);
       out.push(`SELECTED_OUTPUT ${so}`, `    -file ${file}`, '    -reset false', '    -simulation true', '    -state true',
-        '    -distance true', '    -time true', `    -active ${active === false ? 'false' : 'true'}`, `USER_PUNCH ${so}`, ...basic);
+        '    -distance true', '    -time true', `    -active ${active === false ? 'false' : 'true'}`, `USER_PUNCH ${so}`, GRAPH_HEADINGS, ...basic);
     } else {
       if (headings && g.parts.length) g.parts[g.parts.length - 1].headings = headings;
       const so = activeSO.get(n);

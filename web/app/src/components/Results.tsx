@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { checkUserPunch } from '../lib/punchFix';
 import type { RunResult } from '../engine/types';
 import type { ParsedOutput, SelTable, Calc } from '../lib/parseOutput';
 import { isMissing } from '../lib/parseOutput';
@@ -16,6 +17,7 @@ interface Props {
   t: TFn; colors: ThemeColors; outcome: RunOutcome | null; running: boolean; projectName: string;
   charts: Record<string, ChartStyle>; saveChart: (id: string, s: ChartStyle) => void;
   tableCharts: TableChart[]; setTableCharts: (c: TableChart[]) => void; toast: (m: string) => void;
+  runError: string | null; onRun: () => void; input: string; onFixHeadings: () => void;
 }
 
 type Tab = 'charts' | 'solutions' | 'tables' | 'output' | 'messages';
@@ -140,8 +142,15 @@ function NewTableChart({ t, tables, onAdd }: { t: TFn; tables: RunOutcome['table
   );
 }
 
-export function Results({ t, colors, outcome, running, projectName, charts, saveChart, tableCharts, setTableCharts, toast }: Props) {
+export function Results({ t, colors, outcome, running, projectName, charts, saveChart, tableCharts, setTableCharts, toast, runError, onRun, input, onFixHeadings }: Props) {
   const [tab, setTab] = useState<Tab>('charts');
+  // open each new run on the most useful tab
+  useEffect(() => {
+    if (!outcome) return;
+    const bad = outcome.parsed.errors.length > 0 || !outcome.run.ok;
+    setTab(bad ? 'messages' : outcome.graphs.length || tableCharts.length ? 'charts' : outcome.parsed.simulations.length ? 'solutions' : outcome.tables.length ? 'tables' : 'output');
+  }, [outcome?.at]); // eslint-disable-line react-hooks/exhaustive-deps
+  const punch = useMemo(() => checkUserPunch(input), [input]);
   const [tableFile, setTableFile] = useState('');
   const messages = useMemo(() => {
     if (!outcome) return [];
@@ -149,7 +158,14 @@ export function Results({ t, colors, outcome, running, projectName, charts, save
     return [...[...new Set(errs)].map(text => ({ kind: 'error' as 'error' | 'warning', text })), ...outcome.parsed.warnings.map(text => ({ kind: 'warning' as 'error' | 'warning', text }))];
   }, [outcome]);
 
-  if (!outcome) return <main className="view gut"><div className="view-head"><h1>{t('nav_results')}</h1></div><div className="panel panel-b"><p className="muted">{running ? t('running') : t('r_none')}</p></div></main>;
+  if (!outcome) return (
+    <main className="view gut"><div className="view-head"><h1>{t('nav_results')}</h1></div>
+      <div className="panel panel-b" style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'flex-start' }}>
+        {runError && !running && <div className="prob" style={{ alignSelf: 'stretch' }}><span className="sev err">{t('error')}</span><div>{t('r_crash')} {runError}</div></div>}
+        <p className="muted" style={{ margin: 0 }}>{running ? t('running') : t('r_none')}</p>
+        {!running && <button className="btn primary" type="button" onClick={onRun}>▶ {t('r_run_now')}</button>}
+      </div></main>
+  );
 
   const { run, parsed, graphs, tables } = outcome;
   const sims = parsed.simulations.length;
@@ -214,7 +230,19 @@ export function Results({ t, colors, outcome, running, projectName, charts, save
 
       {tab === 'messages' && <div className="panel">
         {!messages.length && <p className="note" style={{ padding: 14 }}><span className="ok">✓</span> {t('e_noproblems')}</p>}
-        {messages.map((m, i) => <div className="prob" key={i}><span className={'sev ' + (m.kind === 'error' ? 'err' : 'wrn')}>{m.kind === 'error' ? t('error') : t('warning')}</span><div>{m.text}</div></div>)}
+        {messages.map((m, i) => {
+          const headings = /Headings count does not match/i.test(m.text);
+          const fixable = headings ? punch.filter(c => c.values != null && c.values !== c.headings.length) : [];
+          const dynamic = headings ? punch.filter(c => c.values == null) : [];
+          return (
+            <div className="prob" key={i}><span className={'sev ' + (m.kind === 'error' ? 'err' : 'wrn')}>{m.kind === 'error' ? t('error') : t('warning')}</span>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}><span>{m.text}</span>
+                {fixable.map(c => <span key={c.line} className="note">{t('ph_fix_s', { label: c.label, h: c.headings.length, v: c.values! })}</span>)}
+                {dynamic.map(c => <span key={c.line} className="note">{t('ph_dyn', { label: c.label })}</span>)}
+                {fixable.length > 0 && <button className="btn sm" type="button" style={{ alignSelf: 'flex-start' }} onClick={onFixHeadings}>{t('ph_fix')}</button>}
+              </div></div>
+          );
+        })}
         {run.errors && !run.ok && <pre className="code" style={{ margin: 12 }}>{run.errors.split('\n').filter(l => l.trim() && !/^\s*[|_]/.test(l)).slice(-30).join('\n')}</pre>}
       </div>}
     </main>
