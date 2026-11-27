@@ -15,6 +15,7 @@ export const T = {
   nav_editor: ['Input Editor', 'Input Editor', 'Editor Input'],
   nav_results: ['Results', '結果', 'Hasil'],
   nav_database: ['Database', 'Database', 'Database'],
+  nav_lab: ['Serpentinization Lab', '蛇紋岩化ラボ', 'Lab Serpentinisasi'],
   glossary: ['Glossary', '用語集', 'Glosarium'],
   docs: ['Documentation', 'ドキュメント', 'Dokumentasi'],
   help: ['Help', 'ヘルプ', 'Bantuan'],

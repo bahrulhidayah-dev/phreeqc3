@@ -9,6 +9,7 @@ import { DatabaseView } from './components/DatabaseView';
 import { ImportDialog } from './components/ImportDialog';
 import { Glossary } from './components/Glossary';
 import { KeywordPalette } from './components/KeywordPalette';
+import { Lab, defaultLab, type LabState } from './components/serp/Lab';
 import type { ThemeColors } from './components/Chart';
 import type { ChartStyle } from './components/chartStyle';
 import { fetchText, runPhreeqc, cancelRun } from './engine/client';
@@ -23,7 +24,7 @@ import { safeName, saveText } from './lib/download';
 import { connectDrive, disconnectDrive, driveConfigured, driveConnected, listProjects, readFile, saveFile, type DriveFile } from './lib/drive';
 
 interface Manifest { databases: string[]; examples: ExampleInfo[]; exampleFiles: string[] }
-type ProjectX = Project & { tableCharts?: TableChart[]; driveId?: string };
+type ProjectX = Project & { tableCharts?: TableChart[]; driveId?: string; lab?: LabState };
 
 /** Absolute path in the engine's file system for a path written relative to its work folder. */
 function resolvePath(p: string) {
@@ -33,7 +34,7 @@ function resolvePath(p: string) {
   return '/' + out.join('/');
 }
 
-const VIEWS: View[] = ['home', 'builder', 'editor', 'results', 'database'];
+const VIEWS: View[] = ['home', 'builder', 'editor', 'results', 'database', 'lab'];
 const viewFromHash = (): View => { const h = location.hash.replace('#', '') as View; return VIEWS.includes(h) ? h : 'home'; };
 
 function readColors(): ThemeColors {
@@ -323,6 +324,10 @@ export default function App() {
         tableCharts={project.tableCharts ?? []} setTableCharts={c => update({ tableCharts: c })} toast={toast}
         runError={runError} onRun={run} input={project.input}
         onFixHeadings={() => { const r = fixPunchHeadings(project.input); if (r.fixed) { update({ input: r.text }); toast(t('ph_done', { n: r.fixed })); } }} />}
+      {view === 'lab' && <Lab t={t} lang={lang} colors={colors} toast={toast}
+        lab={{ ...defaultLab(), ...project.lab }}
+        setLab={f => setProject(p => ({ ...p, lab: f({ ...defaultLab(), ...p.lab }) }))}
+        onOpen={(name, input, db) => { replaceInput(name, input); update({ database: db }); go('builder'); toast(t('t_opened', { name })); }} />}
       {view === 'database' && <DatabaseView t={t} databases={manifest.databases} current={project.database} onUse={d => { update({ database: d }); toast(t('t_db', { db: d })); }} onInsert={insertPhase} />}
 
       <footer className="foot">

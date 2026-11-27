@@ -31,6 +31,7 @@ export function Home({ t, lang, examples, projectName, onNew, onImport, onOpenFi
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             <a className="btn primary" href="#builder">{t('continue')}: {projectName || t('untitled')}</a>
             <button className="btn" type="button" onClick={onDrive}>{t('drive_open')}</button>
+            <a className="btn" href="#lab">{t('nav_lab')}</a>
           </div>
         </div>
         <div className="panel">

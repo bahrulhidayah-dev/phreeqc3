@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { LANGS, type Lang, type TFn } from '../lib/i18n';
 
 export type Theme = 'light' | 'dark' | 'system';
-export type View = 'home' | 'builder' | 'editor' | 'results' | 'database';
+export type View = 'home' | 'builder' | 'editor' | 'results' | 'database' | 'lab';
 
 const MANUAL = 'https://water.usgs.gov/water-resources/software/PHREEQC/documentation/phreeqc3-html/phreeqc3.htm';
 export const SOURCE = 'https://github.com/usgs-coupled/phreeqc3';
@@ -20,6 +20,7 @@ const I = {
   builder: <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4"><rect x="2" y="2.5" width="12" height="3" rx="1" /><rect x="2" y="6.5" width="12" height="3" rx="1" /><rect x="2" y="10.5" width="12" height="3" rx="1" /></svg>,
   editor: <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4"><path d="M5.5 4.5 2 8l3.5 3.5M10.5 4.5 14 8l-3.5 3.5" /></svg>,
   results: <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4"><path d="M2 14h12M4 11.5V8M7 11.5V4.5M10 11.5V7M13 11.5V9.5" /></svg>,
+  lab: <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4"><path d="M6 1.8h4M6.6 1.8v4.4L2.6 13a1 1 0 0 0 .9 1.4h9a1 1 0 0 0 .9-1.4L9.4 6.2V1.8" /><path d="M4.4 10h7.2" /></svg>,
   db: <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4"><ellipse cx="8" cy="3.8" rx="5.5" ry="2" /><path d="M2.5 3.8v8.4c0 1.1 2.5 2 5.5 2s5.5-.9 5.5-2V3.8M2.5 8c0 1.1 2.5 2 5.5 2s5.5-.9 5.5-2" /></svg>,
 };
 
@@ -62,7 +63,7 @@ function Menu({ label, icon, children }: { label: string; icon: React.ReactNode;
 export function Header({ t, lang, setLang, theme, setTheme, view, openGlossary, openKeywords }: Props) {
   const nav: [View, string, React.ReactNode][] = [
     ['home', t('nav_home'), I.home], ['builder', t('nav_builder'), I.builder], ['editor', t('nav_editor'), I.editor],
-    ['results', t('nav_results'), I.results], ['database', t('nav_database'), I.db],
+    ['results', t('nav_results'), I.results], ['lab', t('nav_lab'), I.lab], ['database', t('nav_database'), I.db],
   ];
   return (
     <header className="hdr">
