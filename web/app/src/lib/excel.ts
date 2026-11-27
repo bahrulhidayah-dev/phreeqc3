@@ -27,7 +27,7 @@ const ALIASES: Record<string, [string, string]> = {
   alk: ['Alkalinity', ''], alkalinity: ['Alkalinity', ''], hco3: ['Alkalinity', 'as HCO3'], bicarbonate: ['Alkalinity', 'as HCO3'],
   so4: ['S(6)', 'as SO4'], sulfate: ['S(6)', 'as SO4'], sulphate: ['S(6)', 'as SO4'], no3: ['N(5)', 'as NO3'], nitrate: ['N(5)', 'as NO3'],
   no2: ['N(3)', 'as NO2'], nitrite: ['N(3)', 'as NO2'], nh4: ['N(-3)', 'as NH4'], ammonium: ['N(-3)', 'as NH4'], po4: ['P', 'as PO4'], phosphate: ['P', 'as PO4'],
-  sio2: ['Si', 'as SiO2'], h2s: ['S(-2)', 'as H2S'], doc: ['Doc', ''], o2: ['O(0)', 'as O2'], do: ['O(0)', 'as O2'], dissolved_oxygen: ['O(0)', 'as O2'],
+  sio2: ['Si', 'as SiO2'], h2s: ['S(-2)', 'as H2S'], sulfide: ['S(-2)', ''], sulphide: ['S(-2)', ''], ch4: ['C(-4)', 'as CH4'], methane: ['C(-4)', 'as CH4'], doc: ['Doc', ''], o2: ['O(0)', 'as O2'], do: ['O(0)', 'as O2'], dissolved_oxygen: ['O(0)', 'as O2'],
   fe2: ['Fe(2)', ''], fe3: ['Fe(3)', ''], fe_total: ['Fe', ''], fetot: ['Fe', ''], tic: ['C(4)', ''], dic: ['C(4)', ''],
 };
 
@@ -53,7 +53,8 @@ export function guessColumn(header: string, unitRow = ''): Omit<ColumnMap, 'col'
   if (um) unit = normUnit(um[1]);
   let base = h.replace(/\((?!-?\d+\))[^)]*\)|\[.*?\]/g, ' ').replace(UNIT_RE, ' ').replace(/[_\s]+$/g, '').replace(/^[_\s]+/, '').trim();
   base = base.replace(/[_\s-]+(mg|mmol|ug|meq)$/i, '');
-  const key = base.toLowerCase().replace(/[\s-]+/g, '_').replace(/_+$/, '');
+  // spaces and hyphens become '_', except a minus sign inside a valence such as C(-4), S(-2), N(-3)
+  const key = base.toLowerCase().replace(/[\s-]+(?![^(]*\))/g, '_').replace(/_+$/, '');
   const asText = unitRow.trim();
   const unitFromRow = asText && !/^as\b/i.test(asText) ? normUnit(asText) : '';
   const asFromRow = /^as\b/i.test(asText) ? asText : '';
