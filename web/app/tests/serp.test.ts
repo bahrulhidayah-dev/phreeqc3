@@ -8,7 +8,7 @@ import { presetInput, sweepInput, scenarios, DEFAULT_PARAMS, olivineMoles } from
 import { logKInput, fh2Input, activityDiagram, speciationInput, records, MG_MINERALS } from '../src/lib/serp/thermo.ts';
 import { toMmol, readField, chargeBalance, headspace, orpToPe, ELECTRODES, fieldSolutions, peFromEh } from '../src/lib/serp/field.ts';
 import { isoline, raster, niceLevels } from '../src/lib/serp/contour.ts';
-import { allReferenceSamples, SITES } from '../src/lib/serp/reference.ts';
+import { airFree, allReferenceSamples, GAS_SITES, gasMapPoints, SITES } from '../src/lib/serp/reference.ts';
 import { parseSel } from '../src/lib/parseOutput.ts';
 
 const app = path.resolve(import.meta.dirname, '..');
@@ -155,4 +155,17 @@ test('reference library: every sample converts and speciates in PHREEQC', async 
   const r = await run(speciationInput(fieldSolutions(all, 4, ELECTRODES[0])));
   assert.equal(r.rc, 0);
   assert.equal(r.sel('samples.sel').length, all.length);
+});
+
+test('reference library: Sulawesi sites convert units and gas seeps are air-corrected', () => {
+  const all = allReferenceSamples();
+  const tw = all.find(s => s.id === 'TW-60')!;
+  assert.ok(Math.abs(tw.conc.Mg - 0.1454) < 1e-9);          // µmol/L to mmol/L
+  const po = all.find(s => s.id === 'PO-St1')!;
+  assert.ok(Math.abs(po.conc.Ni - 0.0086 / 58.693) < 1e-12); // mg/L to mmol/L
+  assert.ok(Math.abs(po.lat! + (4 + 9 / 60 + 33.6 / 3600)) < 1e-9 && po.lon! > 121.68 && po.lon! < 121.69);
+  const g = airFree(GAS_SITES[0].rows[0]);                   // 23IDS02
+  assert.ok(Math.abs(g.H2 - 50.8) < 0.1 && Math.abs(g.CH4 - 46.4) < 0.1 && Math.abs(g.N2x - 2.6) < 0.1);
+  assert.ok(Math.abs(g.H2 + g.CH4 + g.C2 + g.CO2 + g.N2x - 100) < 1e-9);
+  assert.equal(gasMapPoints().length, 1);
 });

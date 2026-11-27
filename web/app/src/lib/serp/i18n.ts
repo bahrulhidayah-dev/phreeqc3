@@ -195,6 +195,10 @@ const S = {
   l_added: ['{n} reference samples added', '文献サンプル {n} 件を追加しました', '{n} sampel rujukan ditambahkan'],
   l_note: ['Values are transcribed from the cited publications (rounded, units converted to mmol/L). Check the original tables before citing them.', '値は引用文献から転記し（丸め、mmol/L に換算）ています。引用する前に原著の表を確認してください。', 'Nilai disalin dari publikasi yang dikutip (dibulatkan, satuan diubah ke mmol/L). Periksa tabel aslinya sebelum mengutip.'],
   l_samples: ['samples', 'サンプル', 'sampel'],
+  l_gas: ['gas samples', 'ガス試料', 'sampel gas'],
+  l_kind: ['Type', '種類', 'Jenis'],
+  l_af: ['Air-free', '空気補正', 'Bebas udara'],
+  l_gas_note: ['Raw values as reported; air-free columns are computed here (N₂* = excess N₂ not explained by air). Free-gas samples cannot be added as water samples.', '報告値そのまま。空気補正の列はここで計算（N₂* = 空気で説明できない過剰 N₂）。遊離ガス試料は水試料として追加できません。', 'Nilai mentah sesuai laporan; kolom bebas udara dihitung di sini (N₂* = N₂ berlebih yang tidak berasal dari udara). Sampel gas bebas tidak bisa ditambahkan sebagai sampel air.'],
 
   mp_h: ['Sample map', 'サンプル地図', 'Peta sampel'],
   mp_color: ['Color by', '色分け', 'Warna menurut'],

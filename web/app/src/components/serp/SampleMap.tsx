@@ -4,7 +4,7 @@ import type { Map as LMap, LayerGroup, TileLayer } from 'leaflet';
 import type { STFn } from '../../lib/serp/i18n';
 import type { ThemeColors } from '../Chart';
 import type { FieldSample } from '../../lib/serp/field';
-import { allReferenceSamples } from '../../lib/serp/reference';
+import { allReferenceSamples, gasMapPoints } from '../../lib/serp/reference';
 import { rampColor } from '../../lib/serp/contour';
 import { safeName, saveSVG, saveText, toCSV } from '../../lib/download';
 import { fmt } from './common';
@@ -32,7 +32,7 @@ export function SampleMap({ st, colors, field, toast }: { st: STFn; colors: Them
 
   const pts = useMemo(() => {
     const own = field.filter(s => !s.ref);
-    const refs = showRef ? allReferenceSamples() : field.filter(s => s.ref);
+    const refs = showRef ? [...allReferenceSamples(), ...gasMapPoints()] : field.filter(s => s.ref);
     const seen = new Set<string>();
     return [...own, ...refs].filter(s => Number.isFinite(s.lat) && Number.isFinite(s.lon) && Math.abs(s.lat!) <= 90 && Math.abs(s.lon!) <= 180)
       .filter(s => { const k = s.id + '|' + s.name; if (seen.has(k)) return false; seen.add(k); return true; });
