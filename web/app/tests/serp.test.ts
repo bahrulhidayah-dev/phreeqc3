@@ -8,7 +8,7 @@ import { presetInput, sweepInput, scenarios, DEFAULT_PARAMS, olivineMoles } from
 import { logKInput, fh2Input, activityDiagram, speciationInput, records, MG_MINERALS } from '../src/lib/serp/thermo.ts';
 import { toMmol, readField, chargeBalance, headspace, orpToPe, ELECTRODES, fieldSolutions, peFromEh } from '../src/lib/serp/field.ts';
 import { isoline, raster, niceLevels } from '../src/lib/serp/contour.ts';
-import { allReferenceSamples, SITES } from '../src/lib/serp/reference.ts';
+import { airFree, allReferenceSamples, GAS_SITES, gasMapPoints, SITES } from '../src/lib/serp/reference.ts';
 import { parseSel } from '../src/lib/parseOutput.ts';
 
 const app = path.resolve(import.meta.dirname, '..');
@@ -155,4 +155,38 @@ test('reference library: every sample converts and speciates in PHREEQC', async 
   const r = await run(speciationInput(fieldSolutions(all, 4, ELECTRODES[0])));
   assert.equal(r.rc, 0);
   assert.equal(r.sel('samples.sel').length, all.length);
+});
+
+test('reference library: Sulawesi sites convert units and gas seeps are air-corrected', () => {
+  const all = allReferenceSamples();
+  const tw = all.find(s => s.id === 'TW-60')!;
+  assert.ok(Math.abs(tw.conc.Mg - 0.1454) < 1e-9);          // µmol/L to mmol/L
+  const po = all.find(s => s.id === 'PO-St1')!;
+  assert.ok(Math.abs(po.conc.Ni - 0.0086 / 58.693) < 1e-12); // mg/L to mmol/L
+  assert.ok(Math.abs(po.lat! + (4 + 9 / 60 + 33.6 / 3600)) < 1e-9 && po.lon! > 121.68 && po.lon! < 121.69);
+  const g = airFree(GAS_SITES[0].rows[0]);                   // 23IDS02
+  assert.ok(Math.abs(g.H2 - 50.8) < 0.1 && Math.abs(g.CH4 - 46.4) < 0.1 && Math.abs(g.N2x - 2.6) < 0.1);
+  assert.ok(Math.abs(g.H2 + g.CH4 + g.C2 + g.CO2 + g.N2x - 100) < 1e-9);
+  assert.equal(gasMapPoints().length, 1);
+});
+
+test('reference library: Oman springs (Paukert 2012), Manleluag position, Tanjung Api δ13C from two sources', async () => {
+  const oman = SITES.find(s => s.id === 'oman-springs')!;
+  assert.equal(oman.rows.length, 27);
+  const outlets = oman.rows.filter(r => /spring outlet/.test(r.name));
+  assert.equal(outlets.length, 17);
+  // UTM 40N converted: all within the Samail ophiolite box
+  for (const r of oman.rows) assert.ok(r.lat! > 22.5 && r.lat! < 24.5 && r.lon! > 56 && r.lon! < 59.5, r.id);
+  // Type II outlets: pH > 11, Ca-OH, Mg far below Ca
+  for (const r of outlets) assert.ok(r.pH! > 11 && r.v.Ca > 20 * r.v.Mg, r.id);
+  const cv = SITES.find(s => s.id === 'oman-chavagnac')!;
+  assert.equal(cv.rows.length, 68);
+  for (const r of cv.rows) assert.ok(r.lat! > 22.5 && r.lat! < 24.8 && r.lon! > 56 && r.lon! < 59, r.id);
+  assert.equal(cv.rows.find(r => r.id === 'CV-13-2')!.v.Ca, 1.867);
+  const ml = allReferenceSamples().filter(s => /Manleluag/.test(s.name));
+  assert.equal(ml.length, 3);
+  assert.ok(Math.abs(ml[0].lat! - 15.7044) < 1e-3 && Math.abs(ml[0].lon! - 120.2811) < 1e-3);
+  const ta = GAS_SITES.find(g => g.id === 'tanjungapi')!;
+  assert.equal(ta.rows.find(r => r.id === '23IDS02')!.d13C1Alt, -48.5);
+  assert.ok(ta.rows.some(r => r.id === 'S2004'));
 });
