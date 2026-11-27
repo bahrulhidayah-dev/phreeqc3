@@ -13,6 +13,13 @@ The calculations are done by **PHREEQC 3** (D.L. Parkhurst and C.A.J. Appelo, U.
   - SELECTED_OUTPUT tables, downloadable as CSV, XLSX or `.sel`.
   - Full output file and messages.
 - **Charts:** USER_GRAPH blocks become interactive charts. You can adjust titles, ranges, log axes, secondary Y, legend position, colours, symbols, lines and presets (screen, journal, slide). Charts download as SVG, PNG, PDF or CSV.
+- **Serpentinization Lab** (`#lab`), built on the same engine with `llnl.dat` (0–300 °C):
+  1. *Preset:* olivine (Fo, W/R, T, P, NaCl, DIC, Ca) reacting with 1 kg of fluid to serpentine, brucite (optionally with Fe solid solutions), magnetite, talc, calcite and an optional H2/CH4/H2O gas phase. Opens as ordinary PHREEQC input in the Model Builder.
+  2. *Parameter sweep:* every T × W/R × Fo combination, with a contour map of H2, log fH2, pH or minerals.
+  3. *Diagrams:* MgO–SiO2–H2O activity diagram (log K from `LK_PHASE`), Type I vs Type II waters (Mg/Ca vs pH), log fH2 vs T with the FMQ and HM buffers.
+  4. *Field calculators:* ORP → Eh → pe, headspace gas → dissolved H2/CH4, charge balance (quick estimate and PHREEQC percent error) of field data loaded from Excel/CSV.
+  5. *Reference data:* published analyses from Oman (Rempfert et al. 2017), Zambales and Palawan (Cardace et al. 2015) and Lost City (Aquino et al. 2022), with DOIs.
+  6. *Sample map:* samples with coordinates on OpenStreetMap, coloured by pH, H2, T or Mg/Ca; CSV, GeoJSON and SVG export.
 - **Interface:** English (default), Japanese and Indonesian; light, dark and system themes; glossary; links to the USGS manual.
 - **Projects:** saved in the browser automatically. You can save to or open from a `.aquos` or `.pqi` file, or optionally use Google Drive.
 - **Downloads:** files are created only when you click a download button, as in-memory Blobs. Opening a page never links to a file, so download managers such as IDM are not triggered.

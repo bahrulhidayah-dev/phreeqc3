@@ -358,3 +358,22 @@ textarea.code{display:block;color:var(--ink)}
    background, which is transparent in the header and project bar; give options explicit theme colours. */
 select option, select optgroup{background-color:var(--surface);color:var(--ink)}
 select optgroup{color:var(--muted)}
+
+/* ---------- Serpentinization Lab ---------- */
+.lab-form{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px 14px;align-items:start}
+.lab-form .field .opts{margin-top:4px}
+.lab-checks{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center}
+.lab-pre{max-height:320px;overflow:auto;font-size:12px;margin:8px 0 0;padding:10px;background:var(--sunk);border-radius:8px;white-space:pre}
+.lab-two{grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
+.cb-ok{color:var(--good);font-size:12px;white-space:nowrap}
+.cb-warn{color:var(--warn);font-size:12px;white-space:nowrap}
+.cb-bad{color:var(--bad);font-size:12px;white-space:nowrap}
+.lab-map{height:min(62vh,560px);border-radius:10px;overflow:hidden;border:1px solid var(--line);background:var(--sunk)}
+.lab-legend{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.lab-legend .bar{width:180px;height:10px;border-radius:3px}
+.ref-card{display:flex;flex-direction:column;gap:6px}
+.ref-card .src{font-size:12px;color:var(--muted)}
+.lab-form .opts input{width:auto}
+.lab-alert{padding:10px 14px;border-radius:8px;background:var(--warn-soft);color:var(--ink);font-size:13px;border:1px solid var(--warn)}
+.lab-checks label.opts,.lab-form label.opts{display:inline-flex;flex-wrap:nowrap;align-items:flex-start;gap:6px}
+.lab-checks label.opts input{margin-top:3px;flex:none}
