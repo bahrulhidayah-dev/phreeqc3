@@ -83,7 +83,7 @@ export function Preset({ t, st, colors, params: p, setParams, toast, onOpen }: P
 
       {last && <>
         <div className="view-head"><h2>{st('p_res')}</h2><span className="note">W/R {fmt(num(last['W:R']))} · {res?.ms} ms</span></div>
-        <div className="grid kpis">
+        <div className="grid kpis lab-kpis">
           <Kpi label={st('k_ph')} value={fmt(num(last.pH))} />
           <Kpi label={st('k_h2')} value={fmt(h2Total(last))} unit="mmol" sub={st('k_h2_s')} />
           <Kpi label={st('k_fh2')} value={fmt(num(last.log_fH2))} />

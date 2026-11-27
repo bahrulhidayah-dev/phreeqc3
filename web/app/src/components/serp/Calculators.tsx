@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import type { STFn, SKey } from '../../lib/serp/i18n';
 import { chargeBalance, ELECTRODES, headspace, HENRY, orpToPe, type FieldSample, type RefElectrode } from '../../lib/serp/field';
 import { safeName, saveText, toCSV } from '../../lib/download';
-import { Kpi, NumField, fmt, num } from './common';
+import { Kpi, NumField, fmt, num, sci } from './common';
 import type { Speciation } from './speciation';
 
 interface Props { st: STFn; field: FieldSample[]; electrode: RefElectrode; setElectrode: (e: RefElectrode) => void; spec: Speciation }
@@ -45,7 +45,7 @@ function OrpCalc({ st, electrode, setElectrode }: Omit<Props, 'field' | 'spec'>)
             <NumField label={st('c_dedt')} value={custom.dEdT} onChange={v => setCustom({ ...custom, dEdT: v })} />
           </>}
         </div>
-        <div className="grid kpis">
+        <div className="grid kpis lab-kpis">
           <Kpi label={st('c_eref')} value={fmt(r.eref * 1000, 4)} unit="mV" />
           <Kpi label={st('c_eh')} value={fmt(r.eh * 1000, 4)} unit="mV" />
           <Kpi label={st('c_pe')} value={r.pe.toFixed(2)} />
@@ -79,10 +79,10 @@ function Headspace({ st }: { st: STFn }) {
           <NumField label={st('c_teq')} value={v.t} onChange={set('t')} />
           <NumField label={st('c_patm')} value={v.p} min={0} onChange={set('p')} />
         </div>
-        <div className="grid kpis">
+        <div className="grid kpis lab-kpis">
           <Kpi label={st('c_c0')} value={fmt(umol, 4)} unit="µmol/L" sub={`${fmt(mg, 3)} mg/L`} />
           <Kpi label={st('c_frac')} value={fmt(r.fracInGas * 100, 3)} unit="%" />
-          <Kpi label={st('c_kh')} value={r.kH.toExponential(3)} />
+          <Kpi label={st('c_kh')} value={sci(r.kH, 3)} />
         </div>
         <p className="note"><b>{st('c_line')}:</b> <code className="mono">{line}</code></p>
         <p className="note">{st('c_hs_note')}</p>
