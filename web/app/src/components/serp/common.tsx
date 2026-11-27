@@ -5,6 +5,15 @@ import { safeName, saveText, saveXLSX, toCSV } from '../../lib/download';
 export const num = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) ? v : NaN);
 export const fmt = (v: number, p = 3) => (!Number.isFinite(v) ? '–' : v === 0 ? '0' : Math.abs(v) < 1e-3 || Math.abs(v) >= 1e5 ? v.toExponential(2) : String(+v.toPrecision(p)));
 
+const SUP: Record<string, string> = { '-': '⁻', '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹' };
+// Scientific notation for display, e.g. 7.80 × 10⁻⁴ (plain decimal when the exponent is small).
+export const sci = (v: number, p = 3) => {
+  if (!Number.isFinite(v)) return '–';
+  if (v === 0 || (Math.abs(v) >= 1e-2 && Math.abs(v) < 1e5)) return String(+v.toPrecision(p));
+  const [m, e] = v.toExponential(p - 1).split('e');
+  return `${m} × 10${String(+e).split('').map(c => SUP[c] ?? c).join('')}`;
+};
+
 export function NumField({ label, value, onChange, step = 'any', min, max, hint }: { label: string; value: number; onChange: (v: number) => void; step?: number | 'any'; min?: number; max?: number; hint?: string }) {
   return (
     <label className="field"><span className="lab">{label}</span>

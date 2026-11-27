@@ -360,6 +360,11 @@ select option, select optgroup{background-color:var(--surface);color:var(--ink)}
 select optgroup{color:var(--muted)}
 
 /* ---------- Serpentinization Lab ---------- */
+.lab-kpis{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.lab-kpis .kpi{min-width:0}
+.lab-kpis .kpi .lbl{min-height:2.6em;line-height:1.3}
+.lab-kpis .kpi .val{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:4px;font-size:22px;line-height:1.2;white-space:nowrap}
+.lab-kpis .kpi .val small{margin-left:0}
 .lab-form{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px 14px;align-items:start}
 .lab-form .field .opts{margin-top:4px}
 .lab-checks{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center}
