@@ -28,6 +28,12 @@ export const DEFAULT_PARAMS: SerpParams = {
   steps: 12, serpentine: 'Chrysotile', feSolidSolution: true, talc: false, calcite: false, gasPhase: true,
 };
 
+/**
+ * Fe-bearing solid solutions are only defined when the olivine has Fe: with Fo100 their Fe end-members
+ * (Fe(OH)2, greenalite) have nothing to form from and PHREEQC does not converge, so pure phases are used.
+ */
+export const usesFeSolidSolution = (p: Pick<SerpParams, 'feSolidSolution' | 'fo'>) => p.feSolidSolution && p.fo < 100;
+
 export const olivineMolarMass = (fo: number) => (fo / 100) * M_FO + (1 - fo / 100) * M_FA;
 /** Moles of olivine reacted with 1 kg of water at a water/rock mass ratio. */
 export const olivineMoles = (wr: number, fo: number) => 1000 / (Math.max(wr, 1e-6) * olivineMolarMass(fo));
@@ -50,11 +56,11 @@ function solutionBlock(p: SerpParams, n = 1) {
 
 function phaseBlocks(p: SerpParams, n = 1) {
   const eq = [`EQUILIBRIUM_PHASES ${n}   # secondary minerals; 0 0 = may precipitate, none at the start`, `    Magnetite    0  0`];
-  if (!p.feSolidSolution) eq.push(`    ${p.serpentine.padEnd(12)} 0  0`, `    Brucite      0  0`);
+  if (!usesFeSolidSolution(p)) eq.push(`    ${p.serpentine.padEnd(12)} 0  0`, `    Brucite      0  0`);
   if (p.talc) eq.push(`    Talc         0  0`);
   if (p.calcite) eq.push(`    Calcite      0  0`);
   const out = [eq.join('\n')];
-  if (p.feSolidSolution) out.push([
+  if (usesFeSolidSolution(p)) out.push([
     `SOLID_SOLUTIONS ${n}   # Fe may enter brucite and serpentine (ideal solid solutions)`,
     `    Brucite_ss`, `        -comp  Brucite      0`, `        -comp  Fe(OH)2      0`,
     `    Serpentine_ss`, `        -comp  ${p.serpentine.padEnd(12)}0`, `        -comp  Greenalite   0`,
@@ -71,7 +77,7 @@ const PUNCH_HEAD = 'olivine_mol W:R rock_g pH pe log_fH2 H2_mmol_kgw CH4_mmol_kg
 
 function punchBlock(p: SerpParams, extraHead = '', extraFirst = '') {
   const serp = p.serpentine;
-  const ss = p.feSolidSolution;
+  const ss = usesFeSolidSolution(p);
   return [
     `USER_PUNCH`,
     `    -headings  ${extraHead}${PUNCH_HEAD}`,

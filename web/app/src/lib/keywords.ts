@@ -1,15 +1,17 @@
 // All 80 PHREEQC 3 keywords (src/PhreeqcKeywords/Keywords.cpp, without UNKNOWN), grouped,
 // each with a short description and an insertable template that runs with phreeqc.dat.
 import type { L3 } from './i18n.ts';
+import { RAW_EXAMPLES } from './rawExamples.ts';
 
 export interface Keyword { name: string; desc: string; template: string }
 export interface KeywordGroup { id: string; name: L3; about: L3; keywords: Keyword[] }
 
 const k = (name: string, desc: string, template: string): Keyword => ({ name, desc, template: template.replace(/^\n/, '') });
 
+// a complete state written by DUMP, so the template runs as it stands; users paste their own DUMP output instead
 const raw = (name: string, what: string) => k(name, `Raw ${what} state (as written by DUMP)`, `
-${name} 1
-# Paste a ${what} state written by DUMP (-${what.replace(/ /g, '_')} option) here.
+# Example ${what} state written by DUMP (-${what.replace(/ /g, '_')} option); replace it with your own.
+${RAW_EXAMPLES[name]}
 `);
 const modify = (name: string, what: string) => k(name, `Change a saved ${what}`, `
 ${name} 1
@@ -53,7 +55,7 @@ MIX 3
     1   0.8
     2   0.2
 `),
-      k('ISOTOPES', 'Isotope definitions', `
+      k('ISOTOPES', 'Isotope definitions (use iso.dat)', `
 ISOTOPES
     C
         -isotope  [13C]  permil  0.0111802
@@ -163,12 +165,30 @@ RATE_PARAMETERS_HERMANSKA
     about: ['1D advection, dispersion, diffusion, stagnant cells.', '1次元の移流・分散・拡散、停滞セル。', 'Adveksi, dispersi, difusi 1D, sel stagnan.'],
     keywords: [
       k('ADVECTION', 'Cell-by-cell advection', `
+# ADVECTION needs solution 0 (inflow) and solutions 1 to -cells (the column)
+SOLUTION 0  CaCl2 inflow
+    Ca 1
+    Cl 2
+SOLUTION 1-10  Column water
+    Na 1
+    K  0.2
+    N(5) 1.2
+END
 ADVECTION
     -cells   10
     -shifts  20
     -punch_cells 10
 `),
       k('TRANSPORT', 'Advection, dispersion and diffusion in 1D', `
+# TRANSPORT needs solution 0 (inflow) and solutions 1 to -cells (the column)
+SOLUTION 0  CaCl2 inflow
+    Ca 1
+    Cl 2
+SOLUTION 1-10  Column water
+    Na 1
+    K  0.2
+    N(5) 1.2
+END
 TRANSPORT
     -cells          10
     -lengths        0.1
@@ -187,6 +207,24 @@ TRANSPORT
     about: ['Find reactions that explain a change in composition.', '組成変化を説明する反応を求める。', 'Mencari reaksi yang menjelaskan perubahan komposisi.'],
     keywords: [
       k('INVERSE_MODELING', 'Mass-balance inverse models', `
+# two analyses along a flow path (initial and final water)
+SOLUTION 1  Recharge
+    pH 7.2
+    Ca 1.0
+    Mg 0.3
+    Na 0.7
+    Cl 0.5
+    Alkalinity 2.6
+    S(6) 0.1
+SOLUTION 2  Downgradient
+    pH 7.4
+    Ca 2.2
+    Mg 0.3
+    Na 0.7
+    Cl 0.5
+    Alkalinity 3.4
+    S(6) 0.9
+END
 INVERSE_MODELING 1
     -solutions      1  2
     -uncertainty    0.05
@@ -196,6 +234,9 @@ INVERSE_MODELING 1
         Gypsum
     -balances
         Ca
+        Mg
+        Na
+        Cl
         Alkalinity
 `),
     ],
@@ -251,9 +292,24 @@ SIT
 -epsilon
     Na+   Cl-   0.03
 `),
-      k('LLNL_AQUEOUS_MODEL_PARAMETERS', 'LLNL activity model (use llnl.dat)', `
-LLNL_AQUEOUS_MODEL_PARAMETERS
-# -temperatures, -dh_a, -dh_b, -bdot, -co2_coefs (see llnl.dat)
+      k('LLNL_AQUEOUS_MODEL_PARAMETERS', 'LLNL activity model parameters (llnl.dat has them already; add them to another database)', `
+LLNL_AQUEOUS_MODEL_PARAMETERS   # values of llnl.dat
+-temperatures
+    0.01 25 60 100
+    150 200 250 300
+-dh_a
+    0.4939 0.5114 0.5465 0.5995
+    0.6855 0.7994 0.9593 1.218
+-dh_b
+    0.3253 0.3288 0.3346 0.3421
+    0.3525 0.3639 0.3766 0.3925
+-bdot
+    0.0374 0.041 0.0438 0.046
+    0.047 0.047 0.034 0
+-co2_coefs
+    -1.0312 0.0012806
+    255.9 0.4445
+    -0.001606
 `),
       k('GAS_BINARY_PARAMETERS', 'Peng-Robinson binary interaction parameters', `
 GAS_BINARY_PARAMETERS
@@ -265,11 +321,11 @@ Log_K_example
     log_k     -1.0
     -analytic  0 0 0 0 0
 `),
-      k('ISOTOPE_RATIOS', 'Isotope ratios for output', `
+      k('ISOTOPE_RATIOS', 'Isotope ratios for output (use iso.dat)', `
 ISOTOPE_RATIOS
     R(13C)  [13C]
 `),
-      k('ISOTOPE_ALPHAS', 'Fractionation factors for output', `
+      k('ISOTOPE_ALPHAS', 'Fractionation factors for output (use iso.dat)', `
 ISOTOPE_ALPHAS
     Alpha_13C_CO3-2/CO2(aq)  Log_alpha_13C_CO3-2/CO2(aq)
 `),

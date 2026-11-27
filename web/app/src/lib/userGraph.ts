@@ -51,9 +51,38 @@ export function splitSemicolons(line: string): string[] {
   return out;
 }
 
+/**
+ * Removes PRINT statements from a USER_GRAPH BASIC line. The PHREEQC builds that write the reference
+ * outputs (no chart window) never run USER_GRAPH programs, so their PRINTs (ex11, ex12b, ex17b, ex19b)
+ * would otherwise add lines and "Zero divide" warnings to the output that native PHREEQC does not print.
+ * A PRINT statement runs to the next ":" or ELSE outside quotes; it becomes a harmless assignment.
+ */
+export function dropPrint(line: string): string {
+  let out = '', q = '', i = 0;
+  while (i < line.length) {
+    const ch = line[i];
+    if (q) { out += ch; if (ch === q) q = ''; i++; continue; }
+    if (ch === '"' || ch === "'") { q = ch; out += ch; i++; continue; }
+    if (/^print\b/i.test(line.slice(i, i + 6)) && !/[A-Za-z0-9_$]/.test(line[i - 1] ?? '')) {
+      let j = i + 5, qq = '';
+      for (; j < line.length; j++) {
+        const c = line[j];
+        if (qq) { if (c === qq) qq = ''; continue; }
+        if (c === '"' || c === "'") { qq = c; continue; }
+        if (c === ':' || (/^else\b/i.test(line.slice(j, j + 5)) && /\s/.test(line[j - 1]))) break;
+      }
+      out += 'aquos_print = 0 ';
+      i = j;
+      continue;
+    }
+    out += ch; i++;
+  }
+  return out;
+}
+
 /** Rewrites one BASIC line: graph statements become PUNCH with a marker first. */
 function rewriteBasic(line: string): string {
-  return line
+  return dropPrint(line)
     .replace(/\bgraph_x\b/gi, 'PUNCH "@X",')
     .replace(/\bgraph_sy\b/gi, 'PUNCH "@S",')
     .replace(/\bgraph_y\b/gi, 'PUNCH "@Y",')
