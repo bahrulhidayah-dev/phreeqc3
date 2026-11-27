@@ -19,6 +19,9 @@ export const SOURCES: RefSource[] = [
   { key: 'crowe2011', cite: 'Crowe S.A., Katsev S., Leslie K., Sturm A., Magen C., Nomosatryo S., Pack M.A., Kessler J.D., Reeburgh W.S., Roberts J.A., González L., Haffner G.D., Mucci A., Sundby B., Fowle D.A. (2011) The methane cycle in ferruginous Lake Matano. Geobiology 9, 61–78.', doi: '10.1111/j.1472-4669.2010.00257.x', table: 'Table 2 (pH, T, pCH4, pCO2 by depth); lake position 2°28′ S, 121°17′ E' },
   { key: 'ilham2017', cite: 'Ilham I., Hartono D.M., Suganda E., Nurdin M. (2017) Metal distribution at river water of mining and nickel industrial area in Pomalaa, Southeast Sulawesi Province, Indonesia. Oriental Journal of Chemistry 33(5).', doi: '10.13005/ojc/330557', table: 'Table 2 (2016 survey) and station coordinates' },
   { key: 'sanjaya2024', cite: 'Sanjaya I., Jamal, Fatturahkman M.L., Hermansyah, Arifin A.S., Maryanto S., Kim H.S. (2024) Evaluating the natural hydrogen system in Ampana Basin, Central Sulawesi; an implication for natural hydrogen exploration in Indonesia. Jurnal Geologi dan Sumberdaya Mineral 25(3), 135–149.', doi: '10.33332/jgsm.geologi.v25i3.896', table: 'Table 2 (gas composition, mol %, δ13C)' },
+  { key: 'paukert2012', cite: 'Paukert A.N., Matter J.M., Kelemen P.B., Shock E.L., Havig J.R. (2012) Reaction path modeling of enhanced in situ CO2 mineralization for carbon sequestration in the peridotite of the Samail Ophiolite, Sultanate of Oman. Chemical Geology 330–331, 86–100.', doi: '10.1016/j.chemgeo.2012.08.013', table: 'Table 1 (field data, UTM WGS-84; zone not printed, 40N assumed and converted here) and Table 2 (major ions, mmol/L)' },
+  { key: 'woycheese2015', cite: 'Woycheese K.M., Meyer-Dombard D.R., Cardace D., Argayosa A.M., Arcilla C.A. (2015) Out of the dark: transitional subsurface-to-surface microbial diversity in a terrestrial serpentinizing seep (Manleluag, Pangasinan, the Philippines). Frontiers in Microbiology 6:44.', doi: '10.3389/fmicb.2015.00044', table: 'Methods (site position N15°42′16″ E120°16′52″)' },
+  { key: 'satyana2024', cite: 'Satyana A.H. (2024) Exploring natural hydrogen and abiotic methane in Indonesia: case and idea from Tanjung Api gas seeps, East Arm of Sulawesi – building a geologic hydrogen system in a collision zone. Proceedings, Indonesian Petroleum Association 48th Annual Convention & Exhibition.', doi: '', table: 'Table 1: Subroto et al. (2004, Buletin Geologi ITB 36(3), 117–124) and PSG & Lemigas (2023, unpublished)' },
   { key: 'aquino2022', cite: 'Aquino K.A., Früh-Green G.L., Rickli J., Bernasconi S.M., Lang S.Q., Lilley M.D., Butterfield D.A. (2022) Multi-stage evolution of the Lost City hydrothermal vent fluids. Geochimica et Cosmochimica Acta 332, 239–262.', doi: '10.1016/j.gca.2022.06.027', table: 'Table 2 (Mg, SO4, pH at 22 °C), Table 3 (H2, CH4), Table 1 (Beehive position)' },
 ];
 
@@ -26,9 +29,15 @@ export const SOURCES: RefSource[] = [
 const om = (id: string, lat: number, lon: number, temp: number | undefined, pH: number, eh: number | undefined, v: Record<string, number>, kind: string): RefRow =>
   ({ id: 'OM-' + id, name: `${id} (${kind})`, lat, lon, temp, pH, eh, v });
 
+// Oman springs (Paukert et al. 2012): mmol/L, ORP in mV; Fe is ICP-MS Fe
+const PK_KIND: Record<string, string> = { S: 'spring outlet', G: 'shallow groundwater', F: 'surface water' };
+const pk = (id: string, place: string, k: string, lat: number, lon: number, temp: number, pH: number, orp: number | undefined, v: Record<string, number>): RefRow =>
+  ({ id: 'PK-' + id, name: `${id} ${place} (${PK_KIND[k]})`, lat, lon, temp, pH, orp, v });
+
 // degrees-minutes-seconds to decimal degrees (south and west negative)
 const dms = (d: number, m: number, s: number, neg = false) => (neg ? -1 : 1) * (d + m / 60 + s / 3600);
 const MATANO: [number, number] = [-dms(2, 28, 0), dms(121, 17, 0)];
+const MANLELUAG: [number, number] = [dms(15, 42, 16), dms(120, 16, 52)];
 const TOWUTI: [number, number] = [-2.75, 121.5];
 const mat = (depth: number, pH: number, temp: number): RefRow => ({ id: `MT-${depth}`, name: `Matano ${depth} m`, lat: MATANO[0], lon: MATANO[1], temp, pH, v: {} });
 const pom = (n: number, river: string, lat: [number, number, number], lon: [number, number, number], pH: number, Fe: number, Cr: number, Ni: number): RefRow =>
@@ -57,13 +66,47 @@ export const SITES: RefSite[] = [
     ],
   },
   {
+    id: 'oman-springs', name: 'Samail ophiolite springs, Oman', country: 'OM', source: 'paukert2012', unit: 'mmol/L',
+    setting: ['Hyperalkaline Ca-OH spring outlets (Type II) and, for contrast, Mg-HCO3 shallow groundwater and surface water (Type I) at 13 sites, January 2009 and 2010. Mixed spring/wadi waters and flow-path samples from the paper are not included.', '13 地点の高アルカリ Ca-OH 湧水口（Type II）と、比較用の Mg-HCO3 浅層地下水・表流水（Type I）、2009 年と 2010 年 1 月。論文中の混合水と流路沿い試料は含めていません。', 'Mulut mata air hiperalkalin Ca-OH (Tipe II) dan, sebagai pembanding, air tanah dangkal serta air permukaan Mg-HCO3 (Tipe I) di 13 lokasi, Januari 2009 dan 2010. Sampel campuran mata air/wadi dan sampel sepanjang aliran tidak dimasukkan.'],
+    note: ['Coordinates: UTM from Table 1 converted assuming zone 40N (the zone is not printed; place names fit zone 40). Values printed as below detection are left out. DIC is entered as C(4); OH- from titration is not entered. No dissolved H2 or CH4 in this paper.', '座標：表 1 の UTM を 40N 帯と仮定して変換（帯番号は記載なし。地名は 40 帯に一致）。検出限界未満の値は除外。DIC は C(4) として入力。滴定 OH- は入力していません。この論文には溶存 H2・CH4 はありません。', 'Koordinat: UTM dari Tabel 1 dikonversi dengan asumsi zona 40N (zona tidak dicetak; nama tempat cocok dengan zona 40). Nilai di bawah batas deteksi tidak dimasukkan. DIC dimasukkan sebagai C(4); OH- hasil titrasi tidak dimasukkan. Makalah ini tidak memuat H2 atau CH4 terlarut.'],
+    rows: [
+      pk('OM10_01A', 'Misbit', 'S', 23.29092, 58.23205, 31.6, 11.20, -404, { Cl: 6.97, 'S(6)': 0.07, 'C(4)': 0.11, Ca: 2.12, Na: 6.54, K: 0.15, Mg: 0.0165, Si: 0.04, Fe: 5.19e-05 }),
+      pk('OM10_02L', 'Falaij', 'S', 22.83784, 58.05680, 30.8, 11.52, -393, { Cl: 8.19, 'S(6)': 0.01, 'C(4)': 0.07, Ca: 1.83, Na: 9.63, K: 0.26, Mg: 0.0247, Fe: 4.83e-05 }),
+      pk('OM10_03R', 'Falaij', 'S', 22.84261, 58.05806, 27.9, 11.63, -390, { Cl: 7.49, 'S(6)': 0.03, 'C(4)': 0.06, Ca: 1.67, Na: 8.14, K: 0.22, Mg: 0.037 }),
+      pk('OM10_04S', 'Qafifah', 'S', 22.90444, 58.42467, 22.4, 11.76, -247, { Cl: 5.11, 'S(6)': 0.01, 'C(4)': 0.1, Ca: 1.75, Na: 6.55, K: 0.16, Mg: 0.0189, Fe: 4.17e-05 }),
+      pk('OM10_04U', 'Qafifah', 'S', 22.90472, 58.42424, 24.9, 11.71, -611, { Cl: 4.78, 'S(6)': 0.01, 'C(4)': 0.12, Ca: 1.69, Na: 6.25, K: 0.14, Mg: 0.0189 }),
+      pk('OM10_05AA', 'West of Al Bana', 'S', 23.29314, 56.87858, 28.5, 11.65, -324, { Cl: 11.38, 'S(6)': 0.01, 'C(4)': 0.04, Ca: 1.66, Na: 13.81, K: 0.31, Mg: 0.03, Fe: 3.76e-05 }),
+      pk('OM10_05AD', 'West of Al Bana', 'S', 23.29447, 56.87618, 32.6, 11.68, -393, { Cl: 12.52, 'S(6)': 0.01, 'C(4)': 0.05, Ca: 2.11, Na: 16.78, K: 0.33, Mg: 0.0329, Fe: 3.94e-05 }),
+      pk('OM10_05AF', 'West of Al Bana', 'S', 23.28896, 56.88218, 24.2, 11.90, -436, { Cl: 10.51, 'S(6)': 0.01, 'C(4)': 0.1, Ca: 1.57, Na: 13.82, K: 0.26, Mg: 0.0267, Fe: 0.00015 }),
+      pk('OM10_07AJ', 'Shumayt', 'S', 23.40596, 56.86341, 33.4, 11.46, -231, { Cl: 5.28, 'C(4)': 0.05, Ca: 1.87, Na: 6.53, K: 0.15, Mg: 0.021, Fe: 3.58e-05 }),
+      pk('OM10_08AM', 'Shumayt', 'S', 23.40588, 56.86338, 31.5, 11.53, -323, { Cl: 5.26, 'C(4)': 0.04, Ca: 1.85, Na: 6.45, K: 0.15, Mg: 0.0189 }),
+      pk('OM10_09AT', 'Sudari', 'S', 23.96159, 56.44092, 30.4, 11.61, -292, { Cl: 5.91, 'S(6)': 0.01, 'C(4)': 0.04, Ca: 1.78, Na: 7.56, K: 0.17, Mg: 0.0193, Fe: 5.91e-05 }),
+      pk('OM10_10AV', 'Uqaybah', 'S', 23.81470, 56.27571, 21.4, 11.61, -200, { Cl: 6.55, 'S(6)': 0.07, 'C(4)': 0.14, Ca: 2.56, Na: 4.28, K: 0.15, Mg: 0.00465 }),
+      pk('OM09_W04F', 'Al Hilayw', 'S', 22.81452, 57.83680, 26.3, 11.59, -247, { Cl: 8.33, 'N(5)': 0.01, 'S(6)': 0.04, 'C(4)': 0.22, Ca: 1.4, Na: 11.08, K: 0.25, Mg: 0.00864, Si: 0.09, Fe: 8.42e-05 }),
+      pk('OM09_W04G', 'Al Hilayw', 'S', 22.81466, 57.83682, 27.1, 11.60, -220, { Cl: 8.22, 'S(6)': 0.03, 'C(4)': 0.02, Ca: 1.31, Na: 10.91, K: 0.26, Mg: 0.00905, Si: 0.11, Fe: 4.01e-05 }),
+      pk('OM09_W05L', 'Qafifah', 'S', 22.90476, 58.42423, 23.8, 11.64, -338, { Cl: 4.67, 'N(5)': 0.01, 'S(6)': 0.01, 'C(4)': 0.38, Ca: 1.66, Na: 6.19, K: 0.19, Mg: 0.065, Si: 0.06, Fe: 0.00174 }),
+      pk('OM09_W06O', 'Dima', 'S', 22.98379, 58.59451, 30.3, 11.45, -369, { Cl: 6.73, 'S(6)': 0.01, 'C(4)': 0.16, Ca: 1.82, Na: 7.93, K: 0.23, Mg: 0.00724, Si: 0.04, Fe: 4.05e-05 }),
+      pk('OM09_W13F', 'Shumayt', 'S', 23.40596, 56.86341, 28.1, 11.50, -495, { Cl: 4.96, 'S(6)': 0.01, 'C(4)': 0.2, Ca: 1.82, Na: 6.56, K: 0.16, Mg: 0.00715, Si: 0.06, Fe: 0.000104 }),
+      pk('OM10_06AI', 'Al Bana', 'G', 23.28913, 56.89811, 29.0, 8.52, undefined, { Cl: 1.1, 'N(5)': 0.13, 'S(6)': 0.46, 'C(4)': 2.62, Ca: 0.38, Na: 0.75, K: 0.04, Mg: 1.7, Si: 0.24 }),
+      pk('OM10_12AZ', 'Jabir', 'G', 23.34498, 58.00611, 34.1, 9.36, 94, { Cl: 2.05, 'N(5)': 0.09, 'S(6)': 0.89, 'C(4)': 1.42, Ca: 0.05, Na: 1.43, K: 0.07, Mg: 2.23 }),
+      pk('OM10_13BA', 'Lizugh', 'G', 23.34459, 58.10446, 33.9, 7.77, 147, { Cl: 3.79, 'N(5)': 0.41, 'S(6)': 0.94, 'C(4)': 3.14, Ca: 0.7, Na: 3.34, K: 0.09, Mg: 2.49, Si: 0.41 }),
+      pk('OM10_15BC', 'Trib. to Mansah', 'G', 23.37512, 58.14399, 34.5, 7.90, 120, { Cl: 4.53, 'N(5)': 0.29, 'S(6)': 0.8, 'C(4)': 2.32, Ca: 1.06, Na: 4.11, K: 0.06, Mg: 1.27, Si: 0.36 }),
+      pk('OM09_W08S', 'Qafifah', 'G', 22.90431, 58.42545, 21.6, 8.99, undefined, { Cl: 1.88, 'N(5)': 0.05, 'S(6)': 0.28, 'C(4)': 1.9, Ca: 0.2, Na: 1.64, K: 0.03, Mg: 1.19, Si: 0.13, Fe: 5.01e-05 }),
+      pk('OM10_01D', 'Misbit', 'F', 23.29281, 58.23456, 25.2, 8.35, 41, { Cl: 2.8, 'N(5)': 0.28, 'S(6)': 0.75, 'C(4)': 3.08, Ca: 0.84, Na: 3, K: 0.09, Mg: 1.7, Si: 0.39 }),
+      pk('OM10_08AP', 'Shumayt', 'F', 23.40599, 56.86361, 27.0, 7.90, undefined, { Cl: 1.38, 'N(5)': 0.12, 'S(6)': 0.64, 'C(4)': 5.17, Ca: 0.57, Na: 1.06, K: 0.1, Mg: 2.9, Si: 0.35 }),
+      pk('OM10_09AR', 'Sudari', 'F', 23.96199, 56.44032, 21.5, 8.76, 211, { Cl: 4.9, 'N(5)': 0.01, 'S(6)': 0.5, 'C(4)': 3.04, Ca: 0.45, Na: 4.94, K: 0.12, Mg: 1.67, Si: 0.1, Fe: 2.51e-05 }),
+      pk('OM09_W06P', 'Dima', 'F', 22.98374, 58.59439, 20.2, 8.12, 182, { Cl: 5.14, 'S(6)': 0.32, 'C(4)': 3.46, Ca: 0.49, Na: 4.51, K: 0.11, Mg: 1.99, Si: 0.18, Fe: 0.000466 }),
+      pk('OM09_W12B', 'Sudari', 'F', 23.96196, 56.44031, 17.1, 8.16, 187, { Cl: 8.61, 'S(6)': 0.68, 'C(4)': 3.14, Ca: 0.48, Na: 8.73, K: 0.16, Mg: 1.69, Si: 0.2, Fe: 0.000591 }),
+    ],
+  },
+  {
     id: 'philippines', name: 'Zambales & Palawan, Philippines', country: 'PH', source: 'cardace2015', unit: 'mg/L',
-    setting: ['Springs and a well in the Zambales and Palawan ophiolites (2012 expedition). ORP in mV as reported; the paper gives no coordinates.', 'Zambales と Palawan オフィオライトの湧水と井戸（2012 年調査）。ORP は報告値（mV）。論文に座標はありません。', 'Mata air dan sumur di ofiolit Zambales dan Palawan (ekspedisi 2012). ORP dalam mV sesuai laporan; makalah tidak memuat koordinat.'],
+    setting: ['Springs and a well in the Zambales and Palawan ophiolites (2012 expedition). ORP in mV as reported. Only Manleluag has a published position (Woycheese et al. 2015, Front. Microbiol. 6:44, doi:10.3389/fmicb.2015.00044: N15°42′16″ E120°16′52″); no coordinates were found for Poon Bato, Bigbiga, San Isidro or Mainit, so they are not on the map.', 'Zambales と Palawan オフィオライトの湧水と井戸（2012 年調査）。ORP は報告値（mV）。公表位置があるのは Manleluag のみ（Woycheese ほか 2015、N15°42′16″ E120°16′52″）。Poon Bato、Bigbiga、San Isidro、Mainit の座標は見つからず、地図に表示しません。', 'Mata air dan sumur di ofiolit Zambales dan Palawan (ekspedisi 2012). ORP dalam mV sesuai laporan. Hanya Manleluag yang posisinya terbit (Woycheese dkk. 2015, N15°42′16″ E120°16′52″); koordinat Poon Bato, Bigbiga, San Isidro, dan Mainit tidak ditemukan, sehingga tidak tampil di peta.'],
     note: ['Mg reported as 0 ppm is treated as below detection.', 'Mg 0 ppm は検出限界未満として扱います。', 'Mg yang dilaporkan 0 ppm dianggap di bawah batas deteksi.'],
     rows: [
-      { id: 'PH-ML1', name: 'Manleluag 1 (ML1)', temp: 34.4, pH: 10.9, orp: -703, v: { Cl: 18, 'S(6)': 0.7, Na: 23, K: 0.2, Ca: 3.1 } },
-      { id: 'PH-ML2', name: 'Manleluag 2 (ML2)', temp: 34.3, pH: 10.8, orp: -355, v: { Cl: 18.7, 'S(6)': 0.7, Na: 24.4, K: 0.2, Ca: 3.9 } },
-      { id: 'PH-ML3', name: 'Manleluag 3 (ML3)', temp: 33.8, pH: 10.8, orp: -245, v: { Cl: 17, 'S(6)': 0.8, Na: 22.6, K: 0.2, Mg: 0.1, Ca: 3.3 } },
+      { id: 'PH-ML1', name: 'Manleluag 1 (ML1)', lat: MANLELUAG[0], lon: MANLELUAG[1], temp: 34.4, pH: 10.9, orp: -703, v: { Cl: 18, 'S(6)': 0.7, Na: 23, K: 0.2, Ca: 3.1 } },
+      { id: 'PH-ML2', name: 'Manleluag 2 (ML2)', lat: MANLELUAG[0], lon: MANLELUAG[1], temp: 34.3, pH: 10.8, orp: -355, v: { Cl: 18.7, 'S(6)': 0.7, Na: 24.4, K: 0.2, Ca: 3.9 } },
+      { id: 'PH-ML3', name: 'Manleluag 3 (ML3)', lat: MANLELUAG[0], lon: MANLELUAG[1], temp: 33.8, pH: 10.8, orp: -245, v: { Cl: 17, 'S(6)': 0.8, Na: 22.6, K: 0.2, Mg: 0.1, Ca: 3.3 } },
       { id: 'PH-BB1', name: 'Bigbiga well (BB1)', temp: 29.7, pH: 9.3, orp: -146, v: { Cl: 4.4, 'S(6)': 47.3, Na: 100.5, K: 0.5, Ca: 1.5 } },
       { id: 'PH-PB1', name: 'Poon Bato 1 (PB1)', temp: 31.5, pH: 11.3, orp: -136, v: { Cl: 24, 'S(6)': 0.1, Na: 23.9, K: 1.3, Ca: 52.8 } },
       { id: 'PH-PB2', name: 'Poon Bato 2, star pool (PB2)', temp: 27.2, pH: 9.2, orp: -86, v: { Cl: 11.3, 'S(6)': 0.1, Na: 10.3, K: 0.6, Mg: 7.6, Ca: 8 } },
@@ -118,21 +161,22 @@ export const SITES: RefSite[] = [
 ];
 
 // Free-gas seeps. Values in mol % as reported; air-free values are derived on load.
-export interface GasRow { id: string; name: string; kind: [string, string, string]; O2: number; N2: number; CO2: number; H2: number; CH4: number; C2: number; C3: number; d13C1?: number }
-export interface GasSite { id: string; name: string; source: string; lat?: number; lon?: number; setting: [string, string, string]; note?: [string, string, string]; rows: GasRow[] }
+export interface GasRow { id: string; name: string; kind: [string, string, string]; O2: number; N2: number; CO2: number; H2: number; CH4: number; C2: number; C3: number; d13C1?: number; d13C1Alt?: number }
+export interface GasSite { id: string; name: string; source: string; also?: string[]; lat?: number; lon?: number; setting: [string, string, string]; note?: [string, string, string]; rows: GasRow[] }
 const SEEP: [string, string, string] = ['gas seep', 'ガス湧出', 'rembesan gas'];
 const SPRING: [string, string, string] = ['thermal spring', '温泉', 'mata air panas'];
 export const GAS_SITES: GasSite[] = [{
-  id: 'tanjungapi', name: 'Tanjung Api & Pulodalagan, Ampana, Sulawesi', source: 'sanjaya2024', lat: -0.8129, lon: 121.6222,
+  id: 'tanjungapi', name: 'Tanjung Api & Pulodalagan, Ampana, Sulawesi', source: 'sanjaya2024', also: ['satyana2024'], lat: -0.8129, lon: 121.6222,
   setting: ['Burning gas seeps along ~650 m of coast at the fault contact of serpentinized harzburgite (East Sulawesi Ophiolite) with Quaternary limestone; Pulodalagan is an alkaline (pH 9, 38 °C) thermal spring with travertine. Sampled July 2023.', '蛇紋岩化したハルツバージャイト（東スラウェシオフィオライト）と第四紀石灰岩の断層境界、約 650 m の海岸に沿って燃えるガス湧出。Pulodalagan はトラバーチンを伴うアルカリ性（pH 9、38 °C）温泉。2023 年 7 月採取。', 'Rembesan gas menyala sepanjang ±650 m pantai pada kontak sesar harzburgit terserpentinisasi (Ofiolit Sulawesi Timur) dengan batugamping Kuarter; Pulodalagan adalah mata air panas alkalin (pH 9, 38 °C) dengan travertin. Disampel Juli 2023.'],
-  note: ['Air-free: N2 from air = O2 × 78.08/20.95, then renormalised without O2 and air N2 (Ar ignored). The paper gives no sample coordinates; the map marker is the Tanjung Api landmark (Wikipedia), not a sample position. The δ13C signs follow Table 2; the text prints them as positive.', '空気補正：空気由来 N2 = O2 × 78.08/20.95 とし、O2 と空気由来 N2 を除いて再規格化（Ar は無視）。論文に試料座標はなく、地図の位置は Tanjung Api のランドマーク（Wikipedia）です。δ13C の符号は Table 2 に従います（本文では正の値で記載）。', 'Bebas udara: N2 dari udara = O2 × 78.08/20.95, lalu dinormalisasi tanpa O2 dan N2 udara (Ar diabaikan). Makalah tidak memberi koordinat sampel; penanda peta adalah titik Tanjung Api (Wikipedia), bukan posisi sampel. Tanda δ13C mengikuti Tabel 2; teksnya mencetak positif.'],
+  note: ['Air-free: N2 from air = O2 × 78.08/20.95, then renormalised without O2 and air N2 (Ar ignored). The papers give no sample coordinates; the map marker is the Tanjung Api landmark (Wikipedia), not a sample position. The 2023 compositions are the same PSG–Lemigas analyses in Sanjaya et al. (2024) and Satyana (2024), but δ13C-CH4 differs: Sanjaya Table 2 gives −15.2 and −12.3 ‰ (column δ13C), Satyana Table 1 gives −48.5 to −41.1 ‰ (second value, Lemigas GC-IRMS). Satyana lists 23ML06 as a gas seep and gives C3 0.06 % for 23IDS02B (Sanjaya: 0). The δ13C column shows Sanjaya / Satyana. The 2004 row (Subroto et al., via Satyana Table 1) also has 0.03 % C4+, δ13C −18.7/−18.5 ‰ and δD-CH4 −101/−106 ‰ (duplicate runs).', '空気補正：空気由来 N2 = O2 × 78.08/20.95 とし、O2 と空気由来 N2 を除いて再規格化（Ar は無視）。論文に試料座標はなく、地図の位置は Tanjung Api のランドマーク（Wikipedia）です。2023 年の組成は Sanjaya ほか（2024）と Satyana（2024）で同じ PSG–Lemigas 分析ですが、δ13C-CH4 が異なります：Sanjaya の表 2 は −15.2・−12.3 ‰、Satyana の表 1 は −48.5〜−41.1 ‰（2 番目の値、Lemigas GC-IRMS）。Satyana は 23ML06 をガス湧出とし、23IDS02B の C3 を 0.06 %（Sanjaya は 0）としています。δ13C 欄は Sanjaya / Satyana の順。2004 年の行（Subroto ほか、Satyana 表 1 経由）は C4+ 0.03 %、δ13C −18.7/−18.5 ‰、δD-CH4 −101/−106 ‰（重複測定）。', 'Bebas udara: N2 dari udara = O2 × 78.08/20.95, lalu dinormalisasi tanpa O2 dan N2 udara (Ar diabaikan). Makalah tidak memberi koordinat sampel; penanda peta adalah titik Tanjung Api (Wikipedia), bukan posisi sampel. Komposisi 2023 adalah analisis PSG–Lemigas yang sama di Sanjaya dkk. (2024) dan Satyana (2024), tetapi δ13C-CH4 berbeda: Tabel 2 Sanjaya memberi −15,2 dan −12,3 ‰, Tabel 1 Satyana memberi −48,5 s.d. −41,1 ‰ (nilai kedua, GC-IRMS Lemigas). Satyana mencatat 23ML06 sebagai rembesan gas dan memberi C3 0,06 % untuk 23IDS02B (Sanjaya: 0). Kolom δ13C menampilkan Sanjaya / Satyana. Baris 2004 (Subroto dkk., melalui Tabel 1 Satyana) juga memiliki C4+ 0,03 %, δ13C −18,7/−18,5 ‰ dan δD-CH4 −101/−106 ‰ (analisis duplikat).'],
   rows: [
-    { id: '23IDS02', name: 'Tanjung Api 23IDS02', kind: SEEP, O2: 6.57, N2: 26.28, CO2: 0.03, H2: 35.04, CH4: 32.02, C2: 0.06, C3: 0, d13C1: -15.2 },
-    { id: '23IDS02B', name: 'Tanjung Api 23IDS02B', kind: SEEP, O2: 3.03, N2: 13.82, CO2: 0.03, H2: 35.56, CH4: 47, C2: 0.5, C3: 0 },
-    { id: '23IDS03', name: 'Tanjung Api 23IDS03', kind: SEEP, O2: 5.85, N2: 24.21, CO2: 0.04, H2: 30.81, CH4: 38.74, C2: 0.3, C3: 0.05 },
-    { id: '23IDS04', name: 'Tanjung Api 23IDS04', kind: SEEP, O2: 6.41, N2: 26.79, CO2: 0.03, H2: 25.86, CH4: 40.57, C2: 0.3, C3: 0.04 },
-    { id: '23IDS06', name: 'Tanjung Api 23IDS06', kind: SEEP, O2: 7.42, N2: 29.6, CO2: 0.03, H2: 20.01, CH4: 42.4, C2: 0.49, C3: 0.05 },
-    { id: '23ML06', name: 'Pulodalagan 23ML06', kind: SPRING, O2: 5.64, N2: 46.88, CO2: 0.02, H2: 0, CH4: 46.86, C2: 0.6, C3: 0, d13C1: -12.3 },
+    { id: '23IDS02', name: 'Tanjung Api 23IDS02', kind: SEEP, O2: 6.57, N2: 26.28, CO2: 0.03, H2: 35.04, CH4: 32.02, C2: 0.06, C3: 0, d13C1: -15.2, d13C1Alt: -48.5 },
+    { id: '23IDS02B', name: 'Tanjung Api 23IDS02B', kind: SEEP, O2: 3.03, N2: 13.82, CO2: 0.03, H2: 35.56, CH4: 47, C2: 0.5, C3: 0, d13C1Alt: -42.3 },
+    { id: '23IDS03', name: 'Tanjung Api 23IDS03', kind: SEEP, O2: 5.85, N2: 24.21, CO2: 0.04, H2: 30.81, CH4: 38.74, C2: 0.3, C3: 0.05, d13C1Alt: -45.4 },
+    { id: '23IDS04', name: 'Tanjung Api 23IDS04', kind: SEEP, O2: 6.41, N2: 26.79, CO2: 0.03, H2: 25.86, CH4: 40.57, C2: 0.3, C3: 0.04, d13C1Alt: -42.6 },
+    { id: '23IDS06', name: 'Tanjung Api 23IDS06', kind: SEEP, O2: 7.42, N2: 29.6, CO2: 0.03, H2: 20.01, CH4: 42.4, C2: 0.49, C3: 0.05, d13C1Alt: -44.1 },
+    { id: '23ML06', name: 'Pulodalagan 23ML06', kind: SPRING, O2: 5.64, N2: 46.88, CO2: 0.02, H2: 0, CH4: 46.86, C2: 0.6, C3: 0, d13C1: -12.3, d13C1Alt: -41.1 },
+    { id: 'S2004', name: 'Tanjung Api (Subroto et al. 2004)', kind: SEEP, O2: 7.3, N2: 23.1, CO2: 0, H2: 16.3, CH4: 52.2, C2: 0.82, C3: 0.1, d13C1: -18.5 },
   ],
 }];
 

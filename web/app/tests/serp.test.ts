@@ -169,3 +169,20 @@ test('reference library: Sulawesi sites convert units and gas seeps are air-corr
   assert.ok(Math.abs(g.H2 + g.CH4 + g.C2 + g.CO2 + g.N2x - 100) < 1e-9);
   assert.equal(gasMapPoints().length, 1);
 });
+
+test('reference library: Oman springs (Paukert 2012), Manleluag position, Tanjung Api δ13C from two sources', async () => {
+  const oman = SITES.find(s => s.id === 'oman-springs')!;
+  assert.equal(oman.rows.length, 27);
+  const outlets = oman.rows.filter(r => /spring outlet/.test(r.name));
+  assert.equal(outlets.length, 17);
+  // UTM 40N converted: all within the Samail ophiolite box
+  for (const r of oman.rows) assert.ok(r.lat! > 22.5 && r.lat! < 24.5 && r.lon! > 56 && r.lon! < 59.5, r.id);
+  // Type II outlets: pH > 11, Ca-OH, Mg far below Ca
+  for (const r of outlets) assert.ok(r.pH! > 11 && r.v.Ca > 20 * r.v.Mg, r.id);
+  const ml = allReferenceSamples().filter(s => /Manleluag/.test(s.name));
+  assert.equal(ml.length, 3);
+  assert.ok(Math.abs(ml[0].lat! - 15.7044) < 1e-3 && Math.abs(ml[0].lon! - 120.2811) < 1e-3);
+  const ta = GAS_SITES.find(g => g.id === 'tanjungapi')!;
+  assert.equal(ta.rows.find(r => r.id === '23IDS02')!.d13C1Alt, -48.5);
+  assert.ok(ta.rows.some(r => r.id === 'S2004'));
+});
