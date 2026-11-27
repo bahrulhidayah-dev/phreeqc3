@@ -117,7 +117,11 @@ export function parseCSV(text: string): Sheet {
   const sep = (text.split('\n')[0].match(/;/g)?.length ?? 0) > (text.split('\n')[0].match(/,/g)?.length ?? 0) ? ';' : text.includes('\t') ? '\t' : ',';
   const rows: (string | number | null)[][] = [];
   let row: (string | number | null)[] = [], cur = '', q = false;
-  const push = () => { const t = cur.trim(); row.push(t === '' ? null : Number.isFinite(Number(t)) ? Number(t) : t); cur = ''; };
+  // with ";" or tab as separator the file may come from a spreadsheet set to a decimal comma (e.g. Indonesian or
+  // German locale): "7,25" is then the number 7.25
+  const decimalComma = sep !== ',';
+  const num = (t: string) => (Number.isFinite(Number(t)) ? Number(t) : decimalComma && /^[-+]?\d*,\d+(?:[eE][-+]?\d+)?$/.test(t) ? Number(t.replace(',', '.')) : NaN);
+  const push = () => { const t = cur.trim(); row.push(t === '' ? null : Number.isFinite(num(t)) ? num(t) : t); cur = ''; };
   for (let i = 0; i < text.length; i++) {
     const ch = text[i];
     if (q) { if (ch === '"' && text[i + 1] === '"') { cur += '"'; i++; } else if (ch === '"') q = false; else cur += ch; continue; }

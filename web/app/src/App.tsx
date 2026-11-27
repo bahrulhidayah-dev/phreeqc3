@@ -208,6 +208,8 @@ export default function App() {
     let at = blocks[selected]?.kw ? selected + 1 : blocks.length;
     // keep END last in its simulation
     if (blocks[at - 1]?.kw === 'END') at -= 1;
+    // PHREEQC accepts DATABASE only as the first keyword of the input
+    if (kw === 'DATABASE') at = 0;
     const nb = { kw, head: k.template.split('\n')[0], text: k.template.replace(/\n$/, ''), sim: 0, startLine: 0 };
     const next = [...blocks.slice(0, at), nb, ...blocks.slice(at)];
     setInput(joinBlocks(next).replace(/\n{3,}/g, '\n\n'));

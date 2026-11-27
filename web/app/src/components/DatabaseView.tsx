@@ -9,8 +9,12 @@ interface Props {
 
 const DESC: Record<string, string> = {
   'phreeqc.dat': 'general', 'wateq4f.dat': 'trace elements', 'minteq.v4.dat': 'metals', 'minteq.dat': 'metals', 'llnl.dat': 'high T',
-  'pitzer.dat': 'brines', 'sit.dat': 'SIT', 'iso.dat': 'isotopes', 'frezchem.dat': 'cold brines', 'ColdChem.dat': 'cold', 'Concrete_PHR.dat': 'cement',
-  'Concrete_PZ.dat': 'cement', 'Kinec_v3.dat': 'kinetics', 'Kinec_v3_4.dat': 'kinetics', 'Kinec.v2.dat': 'kinetics', 'phreeqc_rates.dat': 'kinetics',
+  'pitzer.dat': 'brines', 'sit.dat': 'SIT', 'iso.dat': 'isotopes', 'frezchem.dat': 'cold brines', 'ColdChem.dat': 'cold',
+  // add-on files and special-range databases: on their own they stop with errors for an ordinary water (see web/validation)
+  'Concrete_PHR.dat': 'cement add-on: INCLUDE$ it with phreeqc.dat', 'OtherDatabases/Concrete_PHR.dat': 'cement add-on: INCLUDE$ it with phreeqc.dat',
+  'Concrete_PZ.dat': 'cement add-on: INCLUDE$ it with pitzer.dat', 'OtherDatabases/Concrete_PZ.dat': 'cement add-on: INCLUDE$ it with pitzer.dat',
+  'EPRI/cdmusic_hiemstra.dat': 'surface add-on (goethite CD-MUSIC), not standalone', 'OtherDatabases/IU-bl-2kb.dat': '180–940 °C at 2 kbar only',
+  'llnl-organics/llnl_organics.dat': 'stops with input errors (file as published)', 'Kinec_v3.dat': 'kinetics', 'Kinec_v3_4.dat': 'kinetics', 'Kinec.v2.dat': 'kinetics', 'phreeqc_rates.dat': 'kinetics',
   'Tipping_Hurley.dat': 'humic', 'minimum.dat': 'minimal', 'Amm.dat': 'ammonium', 'core10.dat': 'core', 'stimela.dat': 'drinking water',
   'THEREDA_2026-01_PHRQ_r17.dat': 'actinides', 'PHREEQC_ThermoddemV1.10_15Dec2020.dat': 'Thermoddem',
 };

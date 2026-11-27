@@ -5,7 +5,7 @@ import type { STFn } from '../../lib/serp/i18n';
 import type { ThemeColors } from '../Chart';
 import { ChartPanel } from '../ChartPanel';
 import type { ChartStyle } from '../chartStyle';
-import { presetInput, olivineMoles, olivineMolarMass, BAR_TO_ATM, type SerpParams } from '../../lib/serp/model';
+import { presetInput, usesFeSolidSolution, olivineMoles, olivineMolarMass, BAR_TO_ATM, type SerpParams } from '../../lib/serp/model';
 import { records } from '../../lib/serp/thermo';
 import { runLab, type LabRun } from '../../lib/serp/engine';
 import { safeName, saveText } from '../../lib/download';
@@ -43,7 +43,7 @@ export function Preset({ t, st, colors, params: p, setParams, toast, onOpen }: P
   const last = rows[rows.length - 1];
   const pts = (y: (r: Record<string, number | string>) => number) => rows.map(r => ({ x: num(r['W:R']), y: y(r) })).filter(q => Number.isFinite(q.x) && Number.isFinite(q.y));
   const logP = Math.log10(p.pressureBar * BAR_TO_ATM);
-  const ss = p.feSolidSolution;
+  const ss = usesFeSolidSolution(p);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>

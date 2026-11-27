@@ -1,0 +1,159 @@
+TITLE Acuan tulisan tangan untuk sintetis-solusi.xlsx (phreeqc.dat)
+SOLUTION 1  S01
+    units mg/L
+    temp 25
+    pH 7.2
+    pe 4
+    Ca 60
+    Mg 12
+    Na 0.87 mmol/L
+    K 3
+    Fe(2) 50 ug/L
+    Si 18 as SiO2
+    Cl 25
+    Alkalinity 220 as HCO3
+    S(6) 30 as SO4
+    N(5) 8 as NO3
+    F 0.3
+    Li 10 ug/L
+    B 0.05
+SOLUTION 2  S02
+    units mg/L
+    temp 25
+    pH 8.1
+    pe 8.45
+    Ca 412
+    Mg 1290
+    Na 468 mmol/L
+    K 399
+    Si 4.28 as SiO2
+    Cl 19350
+    Alkalinity 142 as HCO3
+    S(6) 2710 as SO4
+    F 1.3
+    Li 170 ug/L
+    B 4.5
+    Br 67
+SOLUTION 3  S03
+    units mg/L
+    temp 18
+    pH 2.6
+    pe 14
+    Ca 180
+    Mg 90
+    Na 0.5 mmol/L
+    K 2
+    Fe(2) 150000 ug/L
+    Fe(3) 80000 ug/L
+    Al 45
+    Si 60 as SiO2
+    Cl 15
+    S(6) 1700 as SO4
+SOLUTION 4  S04
+    units mg/L
+    temp 32
+    pH 11.6
+    pe -4
+    Ca 55
+    Mg 0.1
+    Na 3.5 mmol/L
+    K 3
+    Si 0.5 as SiO2
+    Cl 110
+    S(6) 5 as SO4
+    C(-4) 0.05 as CH4
+    C(4) 0.02 mmol/L
+SOLUTION 5  S05
+    units mg/L
+    temp 22
+    pH 6.9
+    pe -3.5
+    Ca 80
+    Mg 20
+    Na 1.5 mmol/L
+    K 5
+    Fe(2) 3000 ug/L
+    Si 25 as SiO2
+    Cl 40
+    Alkalinity 400 as HCO3
+    S(6) 10 as SO4
+    N(-3) 2.5 as NH4
+    S(-2) 1.2 as H2S
+    C(-4) 4 as CH4
+SOLUTION 6  S06
+    units mg/L
+    temp 25
+    pH 7.2
+    pe 4
+    Ca 60
+    Mg 12
+    Na 4 mmol/L
+    K 3
+    Fe(2) 50 ug/L
+    Si 18 as SiO2
+    Cl 25
+    Alkalinity 220 as HCO3
+    S(6) 30 as SO4
+    N(5) 8 as NO3
+    F 0.3
+    Li 10 ug/L
+    B 0.05
+SOLUTION 7  S07
+    units mg/L
+    pH 7.0
+    Ca 30
+    Cl 20
+    Alkalinity 90 as HCO3
+SOLUTION 8  S08
+    units mg/L
+    temp 90
+    pH 8.8
+    pe 4
+    Ca 4
+    Mg 0.05
+    Na 14 mmol/L
+    K 25
+    Si 350 as SiO2
+    Cl 300
+    Alkalinity 300 as HCO3
+    S(6) 60 as SO4
+    F 6
+    Li 2500 ug/L
+    B 8
+SOLUTION 9  S09
+    units mg/L
+    temp 20
+    pH 5.6
+    pe 4
+    Ca 0.3
+    Mg 0.05
+    Na 0.02 mmol/L
+    K 0.1
+    Cl 0.6
+    S(6) 1.2 as SO4
+    N(5) 1.5 as NO3
+    N(-3) 0.4 as NH4
+SOLUTION 10  S10
+    units mg/L
+    temp 25
+    pH 13.0
+    pe 4
+    Na 110 mmol/L
+    Cl 10
+SOLUTION 11  S11
+    units mg/L
+    temp 90
+    pH 8.8
+    pe 4
+    Ca 4
+    Mg 0.05
+    Na 12 mmol/L
+    K 25
+    Si 350 as SiO2
+    Cl 450
+    Alkalinity 120 as HCO3
+    S(6) 60 as SO4
+    F 6
+    Li 2500 ug/L
+    B 8
+END
