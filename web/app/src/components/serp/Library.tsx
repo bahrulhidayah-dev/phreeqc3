@@ -19,7 +19,7 @@ export function Library({ st, lang, onAdd }: { st: STFn; lang: Lang; onAdd: (s: 
       {SITES.map(site => {
         const src = SOURCES.find(s => s.key === site.source)!;
         const samples = siteSamples(site);
-        const keys = ['Ca', 'Mg', 'Na', 'K', 'Cl', 'Si', 'S(6)', 'C(4)', 'N(5)', 'N(-3)', 'Fe', 'Ni', 'Cr', 'H2', 'CH4'].filter(k => samples.some(s => s.conc[k] != null));
+        const keys = ['Ca', 'Mg', 'Na', 'K', 'Cl', 'Si', 'S(6)', 'C(4)', 'N(5)', 'N(-3)', 'F', 'Sr', 'Fe', 'Ni', 'Cr', 'H2', 'CH4'].filter(k => samples.some(s => s.conc[k] != null));
         return (
           <div className="panel" key={site.id}>
             <div className="panel-h"><h3>{site.name} · {samples.length} {st('l_samples')}</h3>

@@ -179,6 +179,10 @@ test('reference library: Oman springs (Paukert 2012), Manleluag position, Tanjun
   for (const r of oman.rows) assert.ok(r.lat! > 22.5 && r.lat! < 24.5 && r.lon! > 56 && r.lon! < 59.5, r.id);
   // Type II outlets: pH > 11, Ca-OH, Mg far below Ca
   for (const r of outlets) assert.ok(r.pH! > 11 && r.v.Ca > 20 * r.v.Mg, r.id);
+  const cv = SITES.find(s => s.id === 'oman-chavagnac')!;
+  assert.equal(cv.rows.length, 68);
+  for (const r of cv.rows) assert.ok(r.lat! > 22.5 && r.lat! < 24.8 && r.lon! > 56 && r.lon! < 59, r.id);
+  assert.equal(cv.rows.find(r => r.id === 'CV-13-2')!.v.Ca, 1.867);
   const ml = allReferenceSamples().filter(s => /Manleluag/.test(s.name));
   assert.equal(ml.length, 3);
   assert.ok(Math.abs(ml[0].lat! - 15.7044) < 1e-3 && Math.abs(ml[0].lon! - 120.2811) < 1e-3);
